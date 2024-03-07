@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+
+
+<AnchorPane prefHeight="719.0" prefWidth="741.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21">
+   <children>
+      <Pane fx:id="mainPane" layoutX="13.0" layoutY="30.0" prefHeight="679.0" prefWidth="679.0">
+         <children>
+            <ImageView fitHeight="200.0" fitWidth="640.0" layoutX="23.0" layoutY="87.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../../../hotel%20pic/imageFolder/image1.jpg" />
+               </image>
+            </ImageView>
+            <ToolBar layoutX="141.0" layoutY="603.0" prefHeight="51.0" prefWidth="397.0">
+               <items>
+                  <Button layoutX="10.0" layoutY="12.0" mnemonicParsing="false">
+                     <graphic>
+                        <Label text="About Us" />
+                     </graphic>
+                  </Button>
+                  <Button layoutX="10.0" layoutY="12.0" mnemonicParsing="false">
+                     <graphic>
+                        <Label text=" Safety" />
+                     </graphic>
+                  </Button>
+                  <Button layoutX="98.0" layoutY="12.0" mnemonicParsing="false">
+                     <graphic>
+                        <Label text="Your Room" />
+                     </graphic>
+                  </Button>
+                  <Button layoutX="108.0" layoutY="22.0" mnemonicParsing="false">
+                     <graphic>
+                        <Label text="Room Service" />
+                     </graphic>
+                  </Button>
+                  <Button layoutX="274.0" layoutY="18.0" mnemonicParsing="false">
+                     <graphic>
+                        <Label text="Hotel Amenities" />
+                     </graphic>
+                  </Button>
+                  <Button layoutX="362.0" layoutY="18.0" mnemonicParsing="false">
+                     <graphic>
+                        <Label text="Housekeeping" />
+                     </graphic>
+                  </Button>
+                  <Button layoutX="450.0" layoutY="18.0" mnemonicParsing="false">
+                     <graphic>
+                        <Label text="Donate" />
+                     </graphic>
+                  </Button>
+                  <Button layoutX="460.0" layoutY="28.0" mnemonicParsing="false">
+                     <graphic>
+                        <Label text="My Bill" />
+                     </graphic>
+                  </Button>
+                  <Button layoutX="470.0" layoutY="38.0" mnemonicParsing="false">
+                     <graphic>
+                        <Label text=" Alarm" />
+                     </graphic>
+                  </Button>
+                  <Button layoutX="480.0" layoutY="48.0" mnemonicParsing="false">
+                     <graphic>
+                        <Label text="WiFi" />
+                     </graphic>
+                  </Button>
+                  <Button layoutX="490.0" layoutY="58.0" mnemonicParsing="false">
+                     <graphic>
+                        <Label text="Request" />
+                     </graphic>
+                  </Button>
+                  <Button layoutX="500.0" layoutY="68.0" mnemonicParsing="false">
+                     <graphic>
+                        <Label text="TV" />
+                     </graphic>
+                  </Button>
+               </items>
+            </ToolBar>
+            <StackPane alignment="TOP_LEFT" layoutX="23.0" layoutY="293.0" prefHeight="60.0" prefWidth="573.0">
+               <children>
+                  <Label text="Room Service">
+                     <opaqueInsets>
+                        <Insets left="50.0" />
+                     </opaqueInsets>
+                  </Label>
+                  <Label layoutX="10.0" layoutY="10.0" text="hour of servising">
+                     <opaqueInsets>
+                        <Insets left="50.0" />
+                     </opaqueInsets>
+                  </Label>
+                  <Label layoutX="10.0" layoutY="10.0" text="ingrdiant">
+                     <opaqueInsets>
+                        <Insets left="50.0" />
+                     </opaqueInsets>
+                  </Label>
+               </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </StackPane>
+            <HBox fx:id="mainHbox" layoutY="-3.0" prefHeight="154.0" prefWidth="669.0">
+               <children>
+                  <Label fx:id="dateTimeLabelID" text="date" />
+                  <ImageView fx:id="logoID" fitHeight="144.0" fitWidth="139.0" layoutX="150" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../bin/images/logo.jpg" />
+                     </image>
+                  </ImageView>
+                  <Label fx:id="dateTimeLabelID1" layoutX="10.0" layoutY="10.0" text="weather" />
+               </children>
+            </HBox>
+            <Label layoutX="288.0" layoutY="525.0" text="total" />
+            <Label layoutX="331.0" layoutY="525.0" text="\$" />
+            <Button layoutX="352.0" layoutY="560.0" mnemonicParsing="false" text="make order" />
+            <HBox layoutX="245.0" layoutY="360.0" prefHeight="100.0" prefWidth="367.0">
+               <children>
+                  <Label text="amount" />
+                  <TextField />
+                  <Button mnemonicParsing="false" text="add to order" />
+               </children>
+            </HBox>
+            <ListView layoutX="23.0" layoutY="360.0" prefHeight="200.0" prefWidth="200.0" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>
