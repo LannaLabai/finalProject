@@ -22,6 +22,19 @@ public class RoomServiceView extends JFrame implements ActionListener {
 	private JButton btnOrder;
 	
 	private ArrayList<FoodOrderItems> foodOrderItems;
+	
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					RoomServiceView frame = new RoomServiceView();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 
 	/**
 	 * Create the frame.
