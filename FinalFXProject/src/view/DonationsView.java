@@ -47,7 +47,7 @@ public class DonationsView extends JFrame implements ActionListener {
         BackgroundPanel Imageofpage = new BackgroundPanel("src/view/images2/backgroundImage.jpg");
         contentPane = new JPanel();
         contentPane.add(Imageofpage);
-        contentPane.setBackground(Color.BLUE);
+       // contentPane.setBackground(Color.BLUE);
         contentPane.setBorder(new EmptyBorder(10, 10, 10, 10)); // Increased padding
         contentPane.setLayout(new BorderLayout());
 
