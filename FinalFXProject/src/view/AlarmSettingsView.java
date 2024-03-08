@@ -14,7 +14,6 @@ import utils.Ringtone;
 
 public class AlarmSettingsView extends BasicViewTemplate{
 
-	private JPanel contentPane;
 	private JButton btnAddAlarm;
 
 	/**

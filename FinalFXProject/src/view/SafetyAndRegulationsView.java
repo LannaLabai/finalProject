@@ -12,8 +12,6 @@ import control.SafetyController;
 
 public class SafetyAndRegulationsView extends BasicViewTemplate {
 
-	private JPanel contentPane;
-
 	/**
 	 * Launch the application.
 	 */

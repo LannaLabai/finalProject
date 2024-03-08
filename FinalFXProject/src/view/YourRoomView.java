@@ -6,9 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-public class YourRoomView extends JFrame {
-
-	private JPanel contentPane;
+public class YourRoomView extends BasicViewTemplate {
 
 	/**
 	 * Launch the application.
@@ -30,12 +28,18 @@ public class YourRoomView extends JFrame {
 	 * Create the frame.
 	 */
 	public YourRoomView() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
-		setContentPane(contentPane);
+		super("Your Room");
+	}
+	
+	public YourRoomView(JFrame nextFrame) {
+		super("Your Room");
+		this.nextFrame = nextFrame;
+	}
+	
+	public void initialize() {
+		initializeDefault();
+		
+		
 	}
 
 }
