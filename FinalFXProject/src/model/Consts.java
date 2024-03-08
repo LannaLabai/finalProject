@@ -27,7 +27,9 @@ public class Consts {
 	public final static String SQL_INSERT_INTO_FOOD_ORDER_ITEMS = "INSERT INTO tblFoodOrderItems (foodItemID, foodOrderID, quantity) VALUES (?,?,?)";
 	public final static String SQL_INSERT_INTO_REQUESTS = "INSERT INTO tblRequest (roomNumber, clientID,requestDate, requestType, requestContent,complete) VALUES (?,?,?,?,?,?)";
 	public final static String SQL_INSERT_INTO_DONATION = "INSERT INTO tblDonation (donationProjectID, clientID, roomNumber, donationSum, donationDate) VALUES (?,?,?,?,?)";
-
+	public final static String SQL_INSERT_INTO_BOOKED_ROOM_BOOKS_SERVICE = "INSERT INTO tblBookedRoomBooksService (clientID, roomNumber, sessionID) VALUES (?,?,?)";
+	public final static String SQL_INSERT_INTO_SESSION = "INSERT INTO tblSession (serviceID, serviceDate, numOfParticipants) VALUES (?,?,?)";
+	//public final static String SQL_INSERT_INTO_ALARM_SETTINGS = "INSERT INTO tblAlarmSettings (serviceID, serviceDate, numOfParticipants) VALUES (?,?,?)";
 
 	
 }

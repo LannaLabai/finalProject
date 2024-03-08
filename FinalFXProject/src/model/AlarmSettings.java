@@ -14,12 +14,11 @@ public class AlarmSettings {
 	private int volume;
 	private boolean complete;
 	
-	public AlarmSettings(String clientID, String roomNumber, int alarmID, LocalDateTime alarmDateTime,
+	public AlarmSettings(String clientID, String roomNumber, LocalDateTime alarmDateTime,
 			Ringtone ringtone, int volume, boolean complete) {
 
 		this.clientID = clientID;
 		this.roomNumber = roomNumber;
-		this.alarmID = alarmID;
 		this.alarmDateTime = alarmDateTime;
 		this.ringtone = ringtone;
 		this.volume = volume;
@@ -44,10 +43,6 @@ public class AlarmSettings {
 
 	public int getAlarmID() {
 		return alarmID;
-	}
-
-	public void setAlarmID(int alarmID) {
-		this.alarmID = alarmID;
 	}
 
 	public LocalDateTime getAlarmDateTime() {

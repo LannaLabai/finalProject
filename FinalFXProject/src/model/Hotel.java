@@ -34,7 +34,7 @@ import utils.RoomAmenity;
 public class Hotel implements Serializable {
 	
 	private static Hotel hotel = null;
-	
+
 	private static final String businessID = "1234567";
 	private static final String hotelName = "Domus Bat Galim";
 	private static final String hotelAddress = "Bat Galim 6, Haifa";
@@ -43,6 +43,9 @@ public class Hotel implements Serializable {
 	
 	private static String clientID = "211579677";
 	private static int roomNumber = 101;
+	
+	private static String wifiUsername = "user"+String.valueOf(roomNumber);
+	private static final String wifiPassword = "domusbatgalim1233";
 	
 	private HashMap<Integer, AlarmSettings> alarmSettings;
 	private HashMap<Integer, BillItem> billItems;
@@ -90,7 +93,7 @@ public class Hotel implements Serializable {
 		foodOrderItems= new HashMap<>();
 		paidServices= new HashMap<>();
 		places= new HashMap<>();
-		providedServices= new HashMap<>();
+		//providedServices= SQLQueries.read;
 		requests= new HashMap<>();
 		reviews= new HashMap<>();
 		rooms= new HashMap<>();
@@ -107,6 +110,14 @@ public class Hotel implements Serializable {
 
 	
 	
+
+	public static String getWifiUsername() {
+		return wifiUsername;
+	}
+
+	public static String getWifipassword() {
+		return wifiPassword;
+	}
 
 	public static String getBusinessId() {
 		return businessID;

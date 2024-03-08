@@ -12,9 +12,9 @@ public class Session {
 	private LocalDateTime sessionDate;
 	private int numOfParticipants;
 	
-	public Session(int sessionID, int serviceID, LocalDateTime sessionDate, int numOfParticipants) {
+	//for inserting
+	public Session(int serviceID, LocalDateTime sessionDate, int numOfParticipants) {
 		super();
-		this.sessionID = sessionID;
 		this.serviceID = serviceID;
 		this.sessionDate = sessionDate;
 		this.numOfParticipants = numOfParticipants;
@@ -28,11 +28,13 @@ public class Session {
 		this.sessionID = sessionID;
 	}
 
-	public int getServiceName() {
+	
+
+	public int getServiceID() {
 		return serviceID;
 	}
 
-	public void setServiceName(int serviceID) {
+	public void setServiceID(int serviceID) {
 		this.serviceID = serviceID;
 	}
 

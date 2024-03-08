@@ -225,6 +225,8 @@ public class SQLQueries {
 
         return donationProjects;
     }
+	
+	//read from session based on the service id
 
 	
 	//insert data into tables
@@ -326,6 +328,57 @@ public class SQLQueries {
 	            System.out.println("Donation inserted successfully.");
 	        } else {
 	            System.out.println("Failed to insert Donation.");
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        AccessDatabaseConnection.disconnect(connection);
+	    }
+	}
+	
+	//session
+	public static void insertDataIntoTblSession(Session session) {
+	    Connection connection = null;
+	    try {
+	        connection = AccessDatabaseConnection.connect();
+	        PreparedStatement statement = connection.prepareStatement(Consts.SQL_INSERT_INTO_SESSION, Statement.RETURN_GENERATED_KEYS);
+
+	        statement.setInt(1, session.getServiceID());
+	        statement.setTimestamp(2, Timestamp.valueOf(session.getSessionDate()));
+	        statement.setInt(3, session.getNumOfParticipants());
+
+	        int rowsInserted = statement.executeUpdate();
+
+	        if (rowsInserted > 0) {
+	            System.out.println("Session inserted successfully.");
+	        } else {
+	            System.out.println("Failed to insert Session.");
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        AccessDatabaseConnection.disconnect(connection);
+	    }
+	}
+
+	
+	//booked room books service
+	public static void insertDataIntoTblBookedRoomBooksService(BookedRoomBooksService booking) {
+	    Connection connection = null;
+	    try {
+	        connection = AccessDatabaseConnection.connect();
+	        PreparedStatement statement = connection.prepareStatement(Consts.SQL_INSERT_INTO_BOOKED_ROOM_BOOKS_SERVICE, Statement.RETURN_GENERATED_KEYS);
+
+	        statement.setString(1, booking.getClientID());
+	        statement.setString(2, booking.getRoomNumber());
+	        statement.setInt(3, booking.getSessionID());
+
+	        int rowsInserted = statement.executeUpdate();
+
+	        if (rowsInserted > 0) {
+	            System.out.println("Booking inserted successfully.");
+	        } else {
+	            System.out.println("Failed to insert Booking.");
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
