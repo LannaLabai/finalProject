@@ -22,6 +22,10 @@ import model.Hotel;
 
 public class BasicViewTemplate extends JFrame implements ActionListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	protected JPanel contentPane;
 	protected JFrame nextFrame;
 	protected JScrollPane scrollPane;

@@ -226,6 +226,38 @@ public class SQLQueries {
         return donationProjects;
     }
 	
+	public static Room readDataFromTblRoom()
+	{
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        Room room=null;
+
+        try {
+            connection = AccessDatabaseConnection.connect();
+            statement = connection.prepareStatement(Consts.READ_ROOM_INFO);
+            statement.setInt(1, Hotel.getRoomNumber());
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                room = new Room(resultSet.getInt("roomNumber"),resultSet.getInt("roomTypeID"),resultSet.getInt("roomPhoneNumber"));
+                
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                AccessDatabaseConnection.disconnect(connection);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return room;
+    }
+	
 	//read from session based on the service id
 
 	

@@ -21,7 +21,7 @@ import javax.swing.border.EmptyBorder;
 import model.Hotel;
 
 
-public class BabysittingScreen extends JFrame implements ActionListener {
+public class BabysittingView extends JFrame implements ActionListener {
 
 	private JPanel contentPane;
 	private JFrame nextFrame;
@@ -36,7 +36,7 @@ public class BabysittingScreen extends JFrame implements ActionListener {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					BabysittingScreen frame = new BabysittingScreen();
+					BabysittingView frame = new BabysittingView();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -48,7 +48,7 @@ public class BabysittingScreen extends JFrame implements ActionListener {
 	/**
 	 * Create the frame.
 	 */
-	public BabysittingScreen() {
+	public BabysittingView() {
 		super("Babysitting");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -56,7 +56,7 @@ public class BabysittingScreen extends JFrame implements ActionListener {
 		setVisible(true);
 	}
 	
-	public BabysittingScreen(JFrame nextFrame) {
+	public BabysittingView(JFrame nextFrame) {
 		super("Babysitting");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);

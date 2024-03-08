@@ -63,7 +63,9 @@ public class Hotel implements Serializable {
 	private HashMap<Integer, Session> providedServices;
 	private HashMap<Integer, Request> requests;
 	private HashMap<Integer,Review> reviews;
-	private HashMap<Integer, Room> rooms;
+	
+	//private HashMap<Integer, Room> rooms;
+	private Room room;
 	private ArrayList<RoomType> roomTypes;
 	private HashMap<Integer,Service> services;
 	private HashMap<Integer, Update> updates;
@@ -96,8 +98,8 @@ public class Hotel implements Serializable {
 		//providedServices= SQLQueries.read;
 		requests= new HashMap<>();
 		reviews= new HashMap<>();
-		rooms= new HashMap<>();
-		
+		//rooms= new HashMap<>();
+		room = SQLQueries.readDataFromTblRoom();
 		roomTypes= SQLQueries.readDataFromTblRoomType();
 		for(RoomType rt: roomTypes) {
 			rt.addAmenities(SQLQueries.readDataFromTblRoomTypeHasRoomAmenities(rt.getRoomTypeID()));
@@ -213,10 +215,6 @@ public class Hotel implements Serializable {
 		return reviews;
 	}
 
-	public HashMap<Integer, Room> getRooms() {
-		return rooms;
-	}
-
 	public ArrayList<RoomType> getRoomTypes() {
 		return roomTypes;
 	}
@@ -229,6 +227,13 @@ public class Hotel implements Serializable {
 		return updates;
 	}
 
+	public Room getRoom() {
+		return room;
+	}
+
+	public void setRoom(Room room) {
+		this.room = room;
+	}
 
 	@Override
 	public String toString() {

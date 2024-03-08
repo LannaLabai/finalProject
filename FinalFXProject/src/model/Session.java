@@ -28,7 +28,6 @@ public class Session {
 		this.sessionID = sessionID;
 	}
 
-	
 
 	public int getServiceID() {
 		return serviceID;
@@ -76,6 +75,7 @@ public class Session {
 		Session other = (Session) obj;
 		return sessionID == other.sessionID;
 	}
+
 	
 	
 

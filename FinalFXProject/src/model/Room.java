@@ -7,42 +7,41 @@ import utils.*;
 
 public class Room {
 	
-	private String roomNumber;
+	private int roomNumber;
 	private int roomTypeID;
-	private String roomPhoneNumber;
-	
-	public Room(String roomNumber, int roomTypeID, String roomPhoneNumber) {
+	private int roomPhoneNumber;
+
+
+	public Room(int roomNumber, int roomTypeID, int roomPhoneNumber) {
 		super();
 		this.roomNumber = roomNumber;
 		this.roomTypeID = roomTypeID;
 		this.roomPhoneNumber = roomPhoneNumber;
 	}
 
-	public String getRoomNumber() {
+	public int getRoomNumber() {
 		return roomNumber;
 	}
 
-	public void setRoomNumber(String roomNumber) {
-		this.roomNumber = roomNumber;
-	}
-
-	public int getTypeOfRoom() {
+	public int getRoomTypeID() {
 		return roomTypeID;
 	}
 
-	public void setTypeOfRoom(int roomTypeID) {
-		this.roomTypeID = roomTypeID;
-	}
-
-	public String getRoomPhoneNumber() {
+	public int getRoomPhoneNumber() {
 		return roomPhoneNumber;
 	}
 
-	public void setRoomPhoneNumber(String roomPhoneNumber) {
-		this.roomPhoneNumber = roomPhoneNumber;
+	public void setRoomNumber(int roomNumber) {
+		this.roomNumber = roomNumber;
 	}
 
+	public void setRoomTypeID(int roomTypeID) {
+		this.roomTypeID = roomTypeID;
+	}
 
+	public void setRoomPhoneNumber(int roomPhoneNumber) {
+		this.roomPhoneNumber = roomPhoneNumber;
+	}
 
 	@Override
 	public String toString() {

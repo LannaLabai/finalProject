@@ -22,6 +22,8 @@ public class Consts {
 			+ " WHERE clientID = ? AND roomNumber = ?"
 			+ " ORDER BY foodOrderID DESC;";
 	
+	public static final String READ_ROOM_INFO = "SELECT TOP 1 * FROM tblRoom WHERE roomNumber = ? ";
+	
 	//insert data into tables
 	public final static String SQL_INSERT_INTO_FOOD_ORDER = "INSERT INTO tblFoodOrder (clientID, roomNumber, totalPrice, timeOfOrder,orderComplete) VALUES (?,?,?,?,?)";
 	public final static String SQL_INSERT_INTO_FOOD_ORDER_ITEMS = "INSERT INTO tblFoodOrderItems (foodItemID, foodOrderID, quantity) VALUES (?,?,?)";

@@ -15,6 +15,10 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class BackgroundPanel extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private BufferedImage backgroundImage;
 
     public BackgroundPanel(String imagePath) {

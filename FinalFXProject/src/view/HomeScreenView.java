@@ -16,6 +16,10 @@ import javax.swing.border.*;
 
 public class HomeScreenView extends JFrame implements ActionListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JFrame nextFrame;
 	private JToolBar toolBar;
