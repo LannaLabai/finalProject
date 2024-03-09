@@ -7,14 +7,14 @@ import utils.*;
 
 public class AlarmSettings {
 	private String clientID;
-	private String roomNumber;
+	private int roomNumber;
 	private int alarmID;
 	private LocalDateTime alarmDateTime;
 	private Ringtone ringtone;
 	private int volume;
 	private boolean complete;
 	
-	public AlarmSettings(String clientID, String roomNumber, LocalDateTime alarmDateTime,
+	public AlarmSettings(String clientID, int roomNumber, LocalDateTime alarmDateTime,
 			Ringtone ringtone, int volume, boolean complete) {
 
 		this.clientID = clientID;
@@ -33,16 +33,20 @@ public class AlarmSettings {
 		this.clientID = clientID;
 	}
 
-	public String getRoomNumber() {
+	public int getRoomNumber() {
 		return roomNumber;
 	}
 
-	public void setRoomNumber(String roomNumber) {
+	public void setRoomNumber(int roomNumber) {
 		this.roomNumber = roomNumber;
 	}
 
 	public int getAlarmID() {
 		return alarmID;
+	}
+	
+	public void setAlarmID(int alarmID) {
+		this.alarmID=alarmID;
 	}
 
 	public LocalDateTime getAlarmDateTime() {

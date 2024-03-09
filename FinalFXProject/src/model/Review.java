@@ -13,9 +13,8 @@ public class Review {
 	private String clientID;
 	private LocalDateTime reviewsDate;
 	
-	public Review(int reviewsID, String reviewContent, int rating, String clientID, LocalDateTime reviewsDate) {
+	public Review(String reviewContent, int rating, String clientID, LocalDateTime reviewsDate) {
 		super();
-		this.reviewsID = reviewsID;
 		this.reviewContent = reviewContent;
 		this.rating = rating;
 		this.clientID = clientID;

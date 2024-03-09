@@ -30,6 +30,7 @@ import model.Service;
 import model.Update;
 //import model.Hotel;
 import utils.RoomAmenity;
+import utils.ServiceType;
 
 public class Hotel implements Serializable {
 	
@@ -47,28 +48,27 @@ public class Hotel implements Serializable {
 	private static String wifiUsername = "user"+String.valueOf(roomNumber);
 	private static final String wifiPassword = "domusbatgalim1233";
 	
-	private HashMap<Integer, AlarmSettings> alarmSettings;
-	private HashMap<Integer, BillItem> billItems;
-	private HashMap<Integer, BookedRoom> bookedRooms;
-	private HashMap<Integer, BookedRoomBooksService> bookedRoomBooksServices;
-	private HashMap<Integer, Client> clients;
-	private HashMap<Integer,CreditCard> creditCards;
-	private HashMap<Integer, Donation> donations;
-	private ArrayList<DonationProject> donationProjects;
-	private ArrayList<FoodItem> foodItems;
-	private HashMap<Integer,FoodOrder> foodOrders;
-	private HashMap<Integer, FoodOrderItems> foodOrderItems;
-	private HashMap<Integer,PaidService> paidServices;
-	private HashMap<Integer, Place> places;
-	private HashMap<Integer, Session> providedServices;
-	private HashMap<Integer, Request> requests;
-	private HashMap<Integer,Review> reviews;
+	private ArrayList<AlarmSettings> alarmSettings=null;
+	private HashMap<Integer, BillItem> billItems=null;
+	private HashMap<Integer, BookedRoom> bookedRooms=null;
+	private ArrayList<BookedRoomBooksService> bookedRoomBooksServices=null;
+	private HashMap<Integer, Client> clients=null;
+	private HashMap<Integer,CreditCard> creditCards=null;
+	private HashMap<Integer, Donation> donations=null;
+	private ArrayList<DonationProject> donationProjects=null;
+	private ArrayList<FoodItem> foodItems=null;
+	private ArrayList<FoodOrder> foodOrders=null;
+	private HashMap<FoodOrder, ArrayList<FoodOrderItems>> foodOrderItems=null;////////hashmap within it arraylist
+	private HashMap<Integer, Place> places=null;
+	private HashMap<Integer, ArrayList<Session>> sessions=null;
+	private HashMap<Integer, Request> requests=null;
+	private HashMap<Integer,Review> reviews=null;
 	
 	//private HashMap<Integer, Room> rooms;
-	private Room room;
-	private ArrayList<RoomType> roomTypes;
-	private HashMap<Integer,Service> services;
-	private HashMap<Integer, Update> updates;
+	private Room room=null;
+	private ArrayList<RoomType> roomTypes=null;
+	private HashMap<ServiceType,ArrayList<Service>> services=null;
+	private ArrayList<Update> updates=null;
 	
 	
 	/////////////////
@@ -82,35 +82,46 @@ public class Hotel implements Serializable {
 	// Private constructor to prevent instantiation from other classes
 	private Hotel() {
 		
-		alarmSettings= new HashMap<>();
+		alarmSettings= SQLQueries.readDataFromTblAlarmSettings(clientID, roomNumber);
 		billItems= new HashMap<>();
-		bookedRooms= new HashMap<>();
-		bookedRoomBooksServices= new HashMap<>();
-		clients= new HashMap<>();
-		creditCards= new HashMap<>();
-		donations= new HashMap<>();
+		
 		donationProjects= SQLQueries.readDataFromTblDonationProject();
 		foodItems= SQLQueries.readDataFromTblFoodItem();
-		foodOrders= new HashMap<>();
-		foodOrderItems= new HashMap<>();
-		paidServices= new HashMap<>();
+		
 		places= new HashMap<>();
-		//providedServices= SQLQueries.read;
-		requests= new HashMap<>();
-		reviews= new HashMap<>();
-		//rooms= new HashMap<>();
+		
 		room = SQLQueries.readDataFromTblRoom();
 		roomTypes= SQLQueries.readDataFromTblRoomType();
 		for(RoomType rt: roomTypes) {
 			rt.addAmenities(SQLQueries.readDataFromTblRoomTypeHasRoomAmenities(rt.getRoomTypeID()));
 		}
 		
-		services= new HashMap<>();
-		updates= new HashMap<>();
+		services= SQLQueries.readDataFromTblService();
+		
+		updates= SQLQueries.readDataFromTblUpdate();
 		 
 	}
 
+
+	public void defineFoodOrders() {
+		foodOrders= SQLQueries.readDataFromTblFoodOrders(clientID, roomNumber);
+	}
 	
+	public void defineFoodOrderItems() {
+		if(foodOrders==null) {
+			defineFoodOrders();
+			
+		}
+		foodOrderItems= SQLQueries.readDataFromTblFoodOrderItem();
+	}
+	
+	public void defineSessions() {
+		sessions = SQLQueries.readDataFromTblSession();
+	}
+	
+	public void defineBookedRoomBooksServices() {
+		bookedRoomBooksServices= SQLQueries.readDataFromTblBookedRoomBooksService(clientID, roomNumber);
+	}
 	
 
 	public static String getWifiUsername() {
@@ -151,7 +162,7 @@ public class Hotel implements Serializable {
 
 	
 	
-	public HashMap<Integer, AlarmSettings> getAlarmSettings() {
+	public ArrayList<AlarmSettings> getAlarmSettings() {
 		return alarmSettings;
 	}
 
@@ -163,7 +174,7 @@ public class Hotel implements Serializable {
 		return bookedRooms;
 	}
 
-	public HashMap<Integer, BookedRoomBooksService> getBookedRoomBooksServices() {
+	public ArrayList<BookedRoomBooksService> getBookedRoomBooksServices() {
 		return bookedRoomBooksServices;
 	}
 
@@ -187,24 +198,24 @@ public class Hotel implements Serializable {
 		return foodItems;
 	}
 
-	public HashMap<Integer, FoodOrder> getFoodOrders() {
+	public ArrayList<FoodOrder> getFoodOrders() {
 		return foodOrders;
 	}
 
-	public HashMap<Integer, FoodOrderItems> getFoodOrderItems() {
+	public HashMap<FoodOrder, ArrayList<FoodOrderItems>> getFoodOrderItems() {
 		return foodOrderItems;
-	}
-
-	public HashMap<Integer, PaidService> getPaidServices() {
-		return paidServices;
 	}
 
 	public HashMap<Integer, Place> getPlaces() {
 		return places;
 	}
 
-	public HashMap<Integer, Session> getProvidedServices() {
-		return providedServices;
+	public HashMap<Integer, ArrayList<Session>> getSessions() {
+		return sessions;
+	}
+	
+	public ArrayList<Session> getSessionsByServiceID(int serviceID) {
+		return sessions.get(serviceID);
 	}
 
 	public HashMap<Integer, Request> getRequests() {
@@ -219,11 +230,15 @@ public class Hotel implements Serializable {
 		return roomTypes;
 	}
 
-	public HashMap<Integer, Service> getServices() {
+	public HashMap<ServiceType,ArrayList<Service>> getServices() {
 		return services;
 	}
+	
+	public ArrayList<Service> getServiceByType(ServiceType st) {
+		return services.get(st);
+	}
 
-	public HashMap<Integer, Update> getUpdates() {
+	public ArrayList<Update> getUpdates() {
 		return updates;
 	}
 

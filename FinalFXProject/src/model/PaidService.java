@@ -10,7 +10,7 @@ public class PaidService extends Service {
 	private double serviceCost;
 
 	public PaidService(int serviceID, String serivceName, ServiceType serviceType, int maxNumOfParticipants, 
-			String serviceDesc, int serviceCost) {
+			String serviceDesc, double serviceCost) {
 		super(serviceID, serivceName, serviceType,maxNumOfParticipants,serviceDesc);
 		this.serviceCost = serviceCost;
 	}

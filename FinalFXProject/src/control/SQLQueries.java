@@ -8,7 +8,9 @@ import java.util.*;
 import model.*;
 import utils.FoodItemType;
 import utils.KitchenType;
+import utils.Ringtone;
 import utils.RoomAmenity;
+import utils.ServiceType;
 
 public class SQLQueries {
 	
@@ -42,57 +44,81 @@ public class SQLQueries {
     }
 	
 	//food order items
-	public static ArrayList<FoodOrderItems> readDataFromTblFoodOrderItems() {
+	public static HashMap<FoodOrder, ArrayList<FoodOrderItems>> readDataFromTblFoodOrderItem(){
+		HashMap<FoodOrder, ArrayList<FoodOrderItems>> foodOrderItems = new HashMap<FoodOrder, ArrayList<FoodOrderItems>>();
+		for(FoodOrder fo : Hotel.getInstance().getFoodOrders()) {
+			foodOrderItems.put(fo, readDataFromTblFoodOrderItems(fo.getFoodOrderID()));
+		}
+		return foodOrderItems;
+	}
+	
+	public static ArrayList<FoodOrderItems> readDataFromTblFoodOrderItems(int foodOrderID) {
         ArrayList<FoodOrderItems> dataList = new ArrayList<>();
         Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        
         try {
             connection = AccessDatabaseConnection.connect();
-            try (Statement statement = connection.createStatement();
-                 ResultSet resultSet = statement.executeQuery(Consts.READ_TBL_FOOD_ORDER_ITEMS_DATA)) {
+            statement = connection.prepareStatement(Consts.READ_TBL_FOOD_ORDER_ITEMS_DATA);
+            statement.setInt(1, foodOrderID);
+            resultSet = statement.executeQuery();
 
-                while (resultSet.next()) {
-                	int foodItemID = resultSet.getInt("foodItemID");
-                	int foodOrderID  = resultSet.getInt("foodOrderID");
-                	int quantity = resultSet.getInt("quantity");
-                	
-                    FoodOrderItems foodOrderItem = new FoodOrderItems(foodItemID,foodOrderID, quantity);
-                    dataList.add(foodOrderItem);
-                }
+            while (resultSet.next()) {
+                int foodItemID = resultSet.getInt("foodItemID");
+                int quantity = resultSet.getInt("quantity");
+
+                FoodOrderItems foodOrderItem = new FoodOrderItems(foodItemID, foodOrderID, quantity);
+                dataList.add(foodOrderItem);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-        	AccessDatabaseConnection.disconnect(connection);
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                AccessDatabaseConnection.disconnect(connection);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return dataList;
     }
 	
 	//food order
-	public static ArrayList<FoodOrder> readDataFromTblFoodOrders() {
+	public static ArrayList<FoodOrder> readDataFromTblFoodOrders(String clientID, int roomNumber) {
         ArrayList<FoodOrder> dataList = new ArrayList<>();
         Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        
         try {
             connection = AccessDatabaseConnection.connect();
-            try (Statement statement = connection.createStatement();
-                 ResultSet resultSet = statement.executeQuery(Consts.READ_TBL_FOOD_ORDER_DATA)) {
+            statement = connection.prepareStatement(Consts.READ_TBL_FOOD_ORDER_DATA);
+            statement.setString(1, clientID);
+            statement.setInt(2, roomNumber);
+            resultSet = statement.executeQuery();
 
-                while (resultSet.next()) {
-                    int foodOrderID = resultSet.getInt("foodOrderID");
-                    String clientID = resultSet.getString("clientID");
-                    int roomNumber = resultSet.getInt("roomNumber");
-                    double totalPrice = resultSet.getDouble("totalPrice");
-                    LocalDateTime timeOfOrder = resultSet.getTimestamp("timeOfOrder").toLocalDateTime();
-                    boolean orderComplete = resultSet.getBoolean("orderComplete");
+            while (resultSet.next()) {
+                int foodOrderID = resultSet.getInt("foodOrderID");
+                double totalPrice = resultSet.getDouble("totalPrice");
+                LocalDateTime timeOfOrder = resultSet.getTimestamp("timeOfOrder").toLocalDateTime();
+                boolean orderComplete = resultSet.getBoolean("orderComplete");
 
-                    FoodOrder foodOrder = new FoodOrder( clientID, roomNumber, totalPrice, timeOfOrder,orderComplete);
-                    foodOrder.setFoodOrderID(foodOrderID);
-                    dataList.add(foodOrder);
-                }
+                FoodOrder foodOrder = new FoodOrder(clientID, roomNumber, totalPrice, timeOfOrder, orderComplete);
+                foodOrder.setFoodOrderID(foodOrderID);
+                dataList.add(foodOrder);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            AccessDatabaseConnection.disconnect(connection);
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                AccessDatabaseConnection.disconnect(connection);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return dataList;
     }
@@ -258,8 +284,232 @@ public class SQLQueries {
         return room;
     }
 	
-	//read from session based on the service id
+	public static ArrayList<Update> readDataFromTblUpdate() {
+        ArrayList<Update> updates = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
 
+        try {
+            connection = AccessDatabaseConnection.connect();
+            statement = connection.prepareStatement(Consts.READ_TBL_UPDATE);
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                int updateID = resultSet.getInt("updateID");
+                String updateContent = resultSet.getString("updateContent");
+                LocalDateTime publicationDate = resultSet.getTimestamp("publicationDate").toLocalDateTime();
+                int publicationFrequencyInDays = resultSet.getInt("publicationFrequencyInDays");
+                
+                Update updateObject = new Update(updateID, updateContent, publicationDate, publicationFrequencyInDays);
+                
+                if(resultSet.getTimestamp("showUpdateUntilDate")!=null)
+                {
+                	LocalDateTime showUpdateUntilDate = resultSet.getTimestamp("showUpdateUntilDate").toLocalDateTime();
+                	updateObject.setShowUpdateUntilDate(showUpdateUntilDate);
+                }
+                
+                updates.add(updateObject);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                AccessDatabaseConnection.disconnect(connection);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return updates;
+    }
+	
+	//service
+	public static HashMap<ServiceType,ArrayList<Service>> readDataFromTblService(){
+		HashMap<ServiceType,ArrayList<Service>> services = new HashMap<ServiceType,ArrayList<Service>>();
+		for(ServiceType st: ServiceType.values()) {
+			services.put(st, readDataFromTblServiceByServiceType(st));
+		}
+		return services;
+	}
+	
+	public static ArrayList<Service> readDataFromTblServiceByServiceType(ServiceType serviceType) {
+		Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        ArrayList<Service> services = new ArrayList<>();
+
+        try {
+            connection = AccessDatabaseConnection.connect();
+            statement = connection.prepareStatement(Consts.READ_TBL_SERVICE);
+            statement.setString(1, serviceType.toString());
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                // Extract data from result set row
+                int serviceID = resultSet.getInt("serviceID");
+                String serviceName = resultSet.getString("serviceName");
+                ServiceType serviceTypeEnum = ServiceType.valueOf(resultSet.getString("serviceType"));
+                int maxNumOfParticipants = resultSet.getInt("maxNumOfParticipants");
+                String serviceDesc = resultSet.getString("serviceDesc");
+                double serviceCost = resultSet.getDouble("serviceCost");
+
+                // Check if it's a paid service
+                if (!resultSet.wasNull()) {
+                    
+                    services.add(new PaidService(serviceID, serviceName, serviceTypeEnum, maxNumOfParticipants, serviceDesc, serviceCost));
+                } else {
+                    // It's a regular service
+                    services.add(new Service(serviceID, serviceName, serviceTypeEnum, maxNumOfParticipants, serviceDesc));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                AccessDatabaseConnection.disconnect(connection);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return services;
+    }
+	
+	//session
+	public static HashMap<Integer, ArrayList<Session>> readDataFromTblSession(){
+		ArrayList<Integer> serviceIDs = new ArrayList<>();
+		HashMap<Integer, ArrayList<Session>> sessions = new HashMap<Integer, ArrayList<Session>>();
+		
+		for(ServiceType st: Hotel.getInstance().getServices().keySet()) {
+			for(Service s: Hotel.getInstance().getServices().get(st)) {
+				if(s.getSerivceName()!="Spa" && s.getSerivceName()!="Gym") {
+					serviceIDs.add(s.getServiceID());
+				}
+			}
+			
+		}
+		for(Integer i : serviceIDs) {
+			sessions.put(i, readDataFromTblSessionByServiceID(i));
+		}
+		return sessions;
+	}
+	
+	public static ArrayList<Session> readDataFromTblSessionByServiceID(int serviceID) {
+        ArrayList<Session> sessions = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = AccessDatabaseConnection.connect();
+            statement = connection.prepareStatement(Consts.READ_TBL_SESSION);
+            statement.setInt(1, serviceID); // Set the serviceID parameter
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                int sessionID = resultSet.getInt("sessionID");
+                LocalDateTime sessionDate = resultSet.getTimestamp("sessionDate").toLocalDateTime();
+                int numOfParticipants = resultSet.getInt("numOfParticipants");
+
+                Session session = new Session(serviceID, sessionDate, numOfParticipants);
+                session.setSessionID(sessionID);
+                sessions.add(session);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                AccessDatabaseConnection.disconnect(connection);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return sessions;
+    }
+	
+	//booked room books service
+	public static ArrayList<BookedRoomBooksService> readDataFromTblBookedRoomBooksService(String clientID, int roomNumber) {
+        ArrayList<BookedRoomBooksService> bookedRooms = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = AccessDatabaseConnection.connect();
+            statement = connection.prepareStatement(Consts.READ_TBL_BOOKED_ROOM_BOOKS_SERVICE);
+            statement.setString(1, clientID);
+            statement.setInt(2, roomNumber);
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                int sessionID = resultSet.getInt("sessionID");
+                BookedRoomBooksService bookedRoom = new BookedRoomBooksService(clientID, roomNumber, sessionID);
+                bookedRooms.add(bookedRoom);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                AccessDatabaseConnection.disconnect(connection);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return bookedRooms;
+    }
+	
+	//alarm
+	public static ArrayList<AlarmSettings> readDataFromTblAlarmSettings(String clientID, int roomNumber) {
+        ArrayList<AlarmSettings> alarmSettingsList = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = AccessDatabaseConnection.connect();
+            statement = connection.prepareStatement(Consts.READ_TBL_ALARM_SETTINGS);
+            statement.setString(1, clientID);
+            statement.setInt(2, roomNumber);
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                int alarmID = resultSet.getInt("alarmID");
+                LocalDateTime alarmDateTime = resultSet.getTimestamp("alarmDateTime").toLocalDateTime();
+                Ringtone ringtone = Ringtone.valueOf(resultSet.getString("ringtone"));
+                int volume = resultSet.getInt("volumeLevel");
+                boolean complete = resultSet.getBoolean("complete");
+
+                // Create a new instance of AlarmSettings with retrieved data
+                AlarmSettings alarmSettings = new AlarmSettings(clientID, roomNumber, alarmDateTime, ringtone, volume, complete);
+                alarmSettings.setAlarmID(alarmID);
+                alarmSettingsList.add(alarmSettings);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                AccessDatabaseConnection.disconnect(connection);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return alarmSettingsList;
+    }
+	
 	
 	//insert data into tables
 	public static void insertDataIntoTblFoodOrder(FoodOrder foodOrder) {
@@ -392,6 +642,60 @@ public class SQLQueries {
 	        AccessDatabaseConnection.disconnect(connection);
 	    }
 	}
+	
+	//alarm settings
+	public static void insertDataIntoTblAlarmSettings(AlarmSettings alarmSettings) {
+        Connection connection = null;
+        try {
+            connection = AccessDatabaseConnection.connect();
+            PreparedStatement statement = connection.prepareStatement(Consts.SQL_INSERT_INTO_ALARM_SETTINGS, Statement.RETURN_GENERATED_KEYS);
+
+            statement.setString(1, alarmSettings.getClientID());
+            statement.setInt(2, alarmSettings.getRoomNumber());
+            statement.setTimestamp(3, Timestamp.valueOf(alarmSettings.getAlarmDateTime()));
+            statement.setString(4, alarmSettings.getRingtone().toString());
+            statement.setInt(5, alarmSettings.getVolume());
+            statement.setBoolean(6, alarmSettings.isComplete());
+
+            int rowsInserted = statement.executeUpdate();
+
+            if (rowsInserted > 0) {
+                System.out.println("Alarm settings inserted successfully.");
+            } else {
+                System.out.println("Failed to insert alarm settings.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            AccessDatabaseConnection.disconnect(connection);
+        }
+    }
+	
+	//review
+	public static void insertDataIntoTblReview(Review review) {
+        Connection connection = null;
+        try {
+            connection = AccessDatabaseConnection.connect();
+            PreparedStatement statement = connection.prepareStatement(Consts.SQL_INSERT_INTO_REVIEW, Statement.RETURN_GENERATED_KEYS);
+
+            statement.setString(1, review.getReviewContent());
+            statement.setInt(2, review.getRating());
+            statement.setString(3, review.getClientID());
+            statement.setTimestamp(4, Timestamp.valueOf(review.getReviewsDate()));
+
+            int rowsInserted = statement.executeUpdate();
+
+            if (rowsInserted > 0) {
+                System.out.println("Review inserted successfully.");
+            } else {
+                System.out.println("Failed to insert review.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            AccessDatabaseConnection.disconnect(connection);
+        }
+    }
 
 	
 	//booked room books service
@@ -402,7 +706,7 @@ public class SQLQueries {
 	        PreparedStatement statement = connection.prepareStatement(Consts.SQL_INSERT_INTO_BOOKED_ROOM_BOOKS_SERVICE, Statement.RETURN_GENERATED_KEYS);
 
 	        statement.setString(1, booking.getClientID());
-	        statement.setString(2, booking.getRoomNumber());
+	        statement.setInt(2, booking.getRoomNumber());
 	        statement.setInt(3, booking.getSessionID());
 
 	        int rowsInserted = statement.executeUpdate();
@@ -418,6 +722,128 @@ public class SQLQueries {
 	        AccessDatabaseConnection.disconnect(connection);
 	    }
 	}
+	
+	//update functions
+	//alarm settings
+	
+	public static void updateAlarmSettings(AlarmSettings alarmSettings) {
+        Connection connection = null;
+        try {
+            connection = AccessDatabaseConnection.connect();
+            PreparedStatement statement = connection.prepareStatement(Consts.SQL_UPDATE_ALARM_SETTINGS);
 
+            statement.setTimestamp(1, Timestamp.valueOf(alarmSettings.getAlarmDateTime()));
+            statement.setString(2, alarmSettings.getRingtone().toString());
+            statement.setInt(3, alarmSettings.getVolume());
+            statement.setBoolean(4, alarmSettings.isComplete());
+            statement.setInt(5, alarmSettings.getAlarmID());
+
+            int rowsUpdated = statement.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                System.out.println("Alarm settings updated successfully.");
+            } else {
+                System.out.println("Failed to update alarm settings.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            AccessDatabaseConnection.disconnect(connection);
+        }
+    }
+	
+	public static void updateSession(Session session) {
+        Connection connection = null;
+        try {
+            connection = AccessDatabaseConnection.connect();
+            PreparedStatement statement = connection.prepareStatement(Consts.SQL_UPDATE_SESSION);
+
+            statement.setTimestamp(1, Timestamp.valueOf(session.getSessionDate()));
+            statement.setInt(2, session.getNumOfParticipants());
+            statement.setInt(3, session.getSessionID());
+
+            int rowsUpdated = statement.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                System.out.println("Session updated successfully.");
+            } else {
+                System.out.println("Failed to update session.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            AccessDatabaseConnection.disconnect(connection);
+        }
+    }
+	
+	//delete
+	//session
+	public static void deleteSession(int sessionID) {
+        Connection connection = null;
+        try {
+            connection = AccessDatabaseConnection.connect();
+            PreparedStatement statement = connection.prepareStatement(Consts.SQL_DELETE_FROM_TBL_SESSION);
+
+            statement.setInt(1, sessionID);
+
+            int rowsDeleted = statement.executeUpdate();
+
+            if (rowsDeleted > 0) {
+                System.out.println("Session deleted successfully.");
+            } else {
+                System.out.println("No session found with the specified sessionID.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            AccessDatabaseConnection.disconnect(connection);
+        }
+    }
+	
+	//alarm settings
+	public static void deleteAlarmSettings(int alarmID) {
+        Connection connection = null;
+        try {
+            connection = AccessDatabaseConnection.connect();
+            PreparedStatement statement = connection.prepareStatement(Consts.SQL_DELETE_FROM_TBL_ALARM_SETTINGS);
+
+            statement.setInt(1, alarmID);
+
+            int rowsDeleted = statement.executeUpdate();
+
+            if (rowsDeleted > 0) {
+                System.out.println("Alarm settings deleted successfully.");
+            } else {
+                System.out.println("No alarm settings found with the specified alarmID.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            AccessDatabaseConnection.disconnect(connection);
+        }
+    }
+	
+	//booked room books service
+	public static void deleteBookedRoomBooksService(int sessionID) {
+        Connection connection = null;
+        try {
+            connection = AccessDatabaseConnection.connect();
+            PreparedStatement statement = connection.prepareStatement(Consts.SQL_DELETE_FROM_TBL_BOOKED_ROOM_BOOKS_SERVICE);
+
+            statement.setInt(1, sessionID);
+
+            int rowsDeleted = statement.executeUpdate();
+
+            if (rowsDeleted > 0) {
+                System.out.println("Booked room books service deleted successfully.");
+            } else {
+                System.out.println("No booked room books service found with the specified sessionID.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            AccessDatabaseConnection.disconnect(connection);
+        }
+    }
 
 }

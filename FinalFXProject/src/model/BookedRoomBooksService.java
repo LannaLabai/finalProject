@@ -5,10 +5,10 @@ import java.util.Objects;
 public class BookedRoomBooksService {
 	
 	private String clientID;
-	private String roomNumber;
+	private int roomNumber;
 	private int sessionID;
 	
-	public BookedRoomBooksService(String clientID, String roomNumber, int sessionID) {
+	public BookedRoomBooksService(String clientID, int roomNumber, int sessionID) {
 		super();
 		this.clientID = clientID;
 		this.roomNumber = roomNumber;
@@ -23,11 +23,11 @@ public class BookedRoomBooksService {
 		this.clientID = clientID;
 	}
 
-	public String getRoomNumber() {
+	public int getRoomNumber() {
 		return roomNumber;
 	}
 
-	public void setRoomNumber(String roomNumber) {
+	public void setRoomNumber(int roomNumber) {
 		this.roomNumber = roomNumber;
 	}
 

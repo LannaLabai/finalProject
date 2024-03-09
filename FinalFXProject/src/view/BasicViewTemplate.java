@@ -36,7 +36,7 @@ public class BasicViewTemplate extends JFrame implements ActionListener {
 	public BasicViewTemplate(String title) {
 		super(title);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(50, 50, 800, 600);
 		initialize();
 		setVisible(true);
 	}
@@ -44,7 +44,7 @@ public class BasicViewTemplate extends JFrame implements ActionListener {
 	public BasicViewTemplate(String title,JFrame nextFrame) {
 		super(title);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(50, 50, 800, 600);
 		this.nextFrame = nextFrame;
 		initialize();
 		setVisible(true);
@@ -60,8 +60,8 @@ public class BasicViewTemplate extends JFrame implements ActionListener {
 	    contentPane.add(scrollPane, BorderLayout.CENTER);
 
 	    mainPanel = new JPanel();
-	    //mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS)); // Stack components vertically
-	    mainPanel.setLayout(new BorderLayout());
+	    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS)); // Stack components vertically
+	    //mainPanel.setLayout(new BorderLayout());
 	    scrollPane.setViewportView(mainPanel);
 	    setContentPane(contentPane);
 
@@ -72,7 +72,7 @@ public class BasicViewTemplate extends JFrame implements ActionListener {
 	    lblSubtext = new JLabel();
 	    mainPanel.add(lblSubtext);
 	    
-	    
+	    mainPanel.setMaximumSize(new Dimension(800,600));
 	}
 	
 	public void initialize(){
