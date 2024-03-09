@@ -1,118 +1,100 @@
 package view;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.swing.JSpinner.DefaultEditor;
-
+import java.awt.*;
+import java.awt.event.*;
 import utils.Ringtone;
 
-public class AlarmSettingsView extends BasicViewTemplate{
+public class AlarmSettingsView extends BasicViewTemplate {
 
-	private JButton btnAddAlarm;
+    private JButton btnAddAlarm;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					AlarmSettingsView frame = new AlarmSettingsView();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+    public static void main(String[] args) {
+        EventQueue.invokeLater(() -> {
+            try {
+                AlarmSettingsView frame = new AlarmSettingsView();
+                frame.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
-	/**
-	 * Create the frame.
-	 */
-	public AlarmSettingsView() {
-		super("Alarm Settings");
-	}
-	
-	public AlarmSettingsView(JFrame nextFrame) {
-		super("Alarm Settings",nextFrame);
-	}
-	
-	public void initialize() {
-		initializeDefault();
-		
-		lblTitle.setText("<html><h1>Alarm Settings</h1></html>");
-		lblSubtext.setText("");
-		
-		JLabel lblSetAlarm = new JLabel("Add alarm:");
-		JLabel lblRingtone = new JLabel("Choose ringtone:");
-		JLabel lblVolume = new JLabel("Select volume:");
-		
-		JPanel timeSelectionPanel = new JPanel();
-        mainPanel.add(timeSelectionPanel);
+    public AlarmSettingsView() {
+        super("Alarm Settings");
+    }
+
+    public AlarmSettingsView(JFrame nextFrame) {
+        super("Alarm Settings", nextFrame);
+    }
+
+    public void initialize() {
+        initializeDefault();
+
+        // Create content panel
+        JPanel contentPane = new JPanel(null); // Use null layout for precise positioning
+        contentPane.setPreferredSize(new Dimension(800, 600)); // Adjust the size
+
+        // Create background label
+        ImageIcon backgroundImage = new ImageIcon("ImagesOfProject/backgroundImage.jpg");
+        JLabel backgroundLabel = new JLabel(backgroundImage);
+        backgroundLabel.setBounds(0, 0, backgroundImage.getIconWidth(), backgroundImage.getIconHeight());
+
+        // Create the "Add Alarm" button
+        btnAddAlarm = new JButton("Add Alarm");
+        btnAddAlarm.setBounds(520, 500, 160, 30); // Adjusted position and size
+        contentPane.add(btnAddAlarm);
+
+        // Add labels, spinners, comboboxes, sliders
+        JLabel lblSetAlarm = new JLabel("Add alarm:");
+        lblSetAlarm.setBounds(450, 200, 100, 20);
+        contentPane.add(lblSetAlarm);
 
         SpinnerModel hourModel = new SpinnerNumberModel(7, 0, 23, 1);
         JSpinner spinnerHour = new JSpinner(hourModel);
-        timeSelectionPanel.add(spinnerHour);
+        spinnerHour.setBounds(630, 200, 50, 30);
+        contentPane.add(spinnerHour);
 
         SpinnerModel minuteModel = new SpinnerNumberModel(0, 0, 59, 5);
         JSpinner spinnerMinute = new JSpinner(minuteModel);
-        timeSelectionPanel.add(spinnerMinute);
-        
-        JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spinnerMinute, "00");
-        spinnerMinute.setEditor(editor);
-		
-		JComboBox<String> comboBoxRingtone = new JComboBox<>();
-	    for(Ringtone r: Ringtone.values()) {
-	    	comboBoxRingtone.addItem(r.toString());
-	    }
+        spinnerMinute.setBounds(690, 200, 50, 30);
+        contentPane.add(spinnerMinute);
 
-	    // Create JSlider for selecting volume
-	    JSlider sliderVolume = new JSlider(JSlider.HORIZONTAL, 0, 9, 0);
-	    sliderVolume.setMajorTickSpacing(1);
-	    sliderVolume.setPaintTicks(true);
-	    sliderVolume.setPaintLabels(true);
-	    sliderVolume.setSnapToTicks(true);
-	    sliderVolume.setValue(3);
+        JLabel lblRingtone = new JLabel("Choose ringtone:");
+        lblRingtone.setBounds(450, 300, 150, 20);
+        contentPane.add(lblRingtone);
 
-	    // Create JButton for adding alarm
-	    JButton btnAddAlarm = new JButton("Add Alarm");
-	    btnAddAlarm.addActionListener(e -> {
-            int selectedHour = (int) spinnerHour.getValue();
-            int selectedMinute = (int) spinnerMinute.getValue();
+        JComboBox<String> comboBoxRingtone = new JComboBox<>();
+        comboBoxRingtone.addItem("Ringtone 1");
+        comboBoxRingtone.addItem("Ringtone 2");
+        comboBoxRingtone.setBounds(650, 300, 150, 30);
+        contentPane.add(comboBoxRingtone);
 
-            LocalDate currentDate = LocalDate.now();
+        JLabel lblVolume = new JLabel("Select volume:");
+        lblVolume.setBounds(450, 400, 150, 20);
+        contentPane.add(lblVolume);
 
-            // Get the selected time
-            LocalTime selectedTime = LocalTime.of(selectedHour, selectedMinute);
+        JSlider sliderVolume = new JSlider(JSlider.HORIZONTAL, 0, 9, 0);
+        sliderVolume.setMajorTickSpacing(1);
+        sliderVolume.setPaintTicks(true);
+        sliderVolume.setPaintLabels(true);
+        sliderVolume.setSnapToTicks(true);
+        sliderVolume.setValue(3);
+        sliderVolume.setBounds(650, 400, 150, 50);
+        contentPane.add(sliderVolume);
 
-            // Create LocalDateTime for the selected time on the day after
-            LocalDateTime alarmDateTime = LocalDateTime.of(currentDate.plusDays(1), selectedTime);
+        // Add background label to content pane
+        contentPane.add(backgroundLabel);
 
-            // Display the selected alarm time
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            JOptionPane.showMessageDialog(this, "Alarm set for: " + alarmDateTime.format(formatter), "Alarm Set", JOptionPane.INFORMATION_MESSAGE);
+        // Set the content pane to the custom JPanel
+        setContentPane(contentPane);
 
-        });
+        pack();
+    }
 
-	    // Add components to the panel
-	    mainPanel.add(lblSetAlarm);
-	    // Add more components as needed
-	    mainPanel.add(lblRingtone);
-	    mainPanel.add(comboBoxRingtone);
-	    mainPanel.add(lblVolume);
-	    mainPanel.add(sliderVolume);
-	    mainPanel.add(btnAddAlarm);
-	}
-	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		
-	}
+    @Override
+    public void actionPerformed(ActionEvent e) {
 
+    }
 }
