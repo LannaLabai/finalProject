@@ -15,20 +15,13 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class BackgroundPanel extends JPanel {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private BufferedImage backgroundImage;
+	
+	private Image backgroundImage;
 
     public BackgroundPanel(String imagePath) {
-        try {
-            backgroundImage = ImageIO.read(new File(imagePath));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.backgroundImage = new ImageIcon(imagePath).getImage();
     }
-    
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
