@@ -26,6 +26,7 @@ public class BasicViewTemplate extends JFrame implements ActionListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	protected JButton btnBack;
 	protected JPanel contentPane;
 	protected JFrame nextFrame;
 	protected JScrollPane scrollPane;
@@ -64,6 +65,10 @@ public class BasicViewTemplate extends JFrame implements ActionListener {
 	    //mainPanel.setLayout(new BorderLayout());
 	    scrollPane.setViewportView(mainPanel);
 	    setContentPane(contentPane);
+	    
+		btnBack = new JButton("Back");
+		btnBack.addActionListener(this);
+		mainPanel.add(btnBack);
 
 	    // Add title
 	    lblTitle = new JLabel();
@@ -79,11 +84,13 @@ public class BasicViewTemplate extends JFrame implements ActionListener {
 		
 	}
 	
-	
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
+		if(e.getSource()==btnBack) {
+			nextFrame.setVisible(true);
+            this.setVisible(false);
+		}
 		
 	}
 

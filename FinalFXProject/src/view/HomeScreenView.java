@@ -1,9 +1,9 @@
 package view;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+import javax.swing.border.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
+import java.time.*;
 
 public class HomeScreenView extends JFrame implements ActionListener {
 
@@ -83,7 +83,7 @@ public class HomeScreenView extends JFrame implements ActionListener {
         JToolBar toolBar = new JToolBar();
         toolBar.setFloatable(false);
         String[] toolbarButtons = {"About Us", "Safety", "Your Room", "Room Service", "Hotel Amenities",
-                "Housekeeping", "Donate", "My Bill", "Alarm", "WiFi", "Request", "TV"};
+                "Housekeeping", "Donate", "My Bill", "Alarm", "Wifi", "Requests"};
         for (String buttonLabel : toolbarButtons) {
             JButton button = new JButton(buttonLabel);
             // Set preferred size to make the button bigger
@@ -92,6 +92,7 @@ public class HomeScreenView extends JFrame implements ActionListener {
             button.setBorder(new RoundedBorder(20)); // Adjust the radius as needed
             button.setContentAreaFilled(false); // Make the button transparent
             button.setFont(new Font("Arial", Font.PLAIN, 14));
+            toolBar.addSeparator(new Dimension(10, 10));
             toolBar.add(button);
             button.addActionListener(this);
         }
@@ -109,33 +110,23 @@ public class HomeScreenView extends JFrame implements ActionListener {
         // Create a panel for centering components
         JPanel centerPanel = new JPanel();
         centerPanel.setOpaque(false);
-        centerPanel.setLayout(new GridLayout(3, 1, 0, 20)); // 3 rows, 1 column, vertical gap of 20 pixels
+        centerPanel.setLayout(new GridLayout(3, 1, 0, 20));
 
-        JLabel welcomeLabel = new JLabel("Welcome to Our Hotel!");
+        JLabel welcomeLabel = new JLabel("Welcome to Domus Bat Galim Hotel!");
         welcomeLabel.setForeground(Color.BLACK);
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 30));
-        welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER); // Center align the label
+        welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         centerPanel.add(welcomeLabel);
 
-        JLabel experienceLabel = new JLabel("Experience the Best Stay Ever!");
+        JLabel experienceLabel = new JLabel("Experience the Best Stay!");
         experienceLabel.setForeground(Color.BLACK);
         experienceLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        experienceLabel.setHorizontalAlignment(SwingConstants.CENTER); // Center align the label
+        experienceLabel.setHorizontalAlignment(SwingConstants.CENTER);
         centerPanel.add(experienceLabel);
-
-        // Create a panel for the "Book Now" button
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        buttonPanel.setOpaque(false);
-        JButton bookNowButton = new JButton("Book Now");
-        bookNowButton.setFont(new Font("Arial", Font.PLAIN, 16));
-        bookNowButton.addActionListener(this);
-        buttonPanel.add(bookNowButton);
-
-        centerPanel.add(buttonPanel);
 
         mainPanel.add(centerPanel, BorderLayout.CENTER);
 
-        contentPane.add(mainPanel, BorderLayout.CENTER); // Add mainPanel to the center
+        contentPane.add(mainPanel, BorderLayout.CENTER);
     }
 
     @Override
@@ -149,21 +140,44 @@ public class HomeScreenView extends JFrame implements ActionListener {
                     this.setVisible(false);
                     break;
                 case "Safety":
-                    // Handle the "Safety" button click
-                    System.out.println("Safety button clicked");
+                	new SafetyAndRegulationsView(this);
+                    this.setVisible(false);
                     break;
                 case "Your Room":
-                    // Handle the "Your Room" button click
-                    System.out.println("Your Room button clicked");
+                	new YourRoomView(this);
+                    this.setVisible(false);
                     break;
-                // Add cases for other buttons as needed
                 case "Room Service":
                     new RoomServiceView(this);
                     this.setVisible(false);
                     break;
-                case "Book Now":
-                    // Handle the "Book Now" button click
-                    System.out.println("Book Now button clicked");
+                case "Hotel Amenities":
+                	new HotelAmenitiesView(this);
+                    this.setVisible(false);
+                    break;
+                case "Housekeeping":
+                    new HouseKeepingView(this);
+                    this.setVisible(false);
+                    break;
+                case "Donate":
+                	new DonationsView(this);
+                    this.setVisible(false);
+                    break;
+                case "My Bill":
+                	new ClientBillView(this);
+                    this.setVisible(false);
+                    break;
+                case "Alarm":
+                    new AlarmSettingsView(this);
+                    this.setVisible(false);
+                    break;
+                case "Wifi":
+                	new WifiInfoView(this);
+                    this.setVisible(false);
+                    break;
+                case "Requests":
+                	new RequestsView(this);
+                    this.setVisible(false);
                     break;
             }
         }

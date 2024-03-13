@@ -7,6 +7,7 @@ import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -22,6 +23,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
+import control.SQLQueries;
+import model.Hotel;
+import model.Request;
 import utils.RequestType;
 
 public class HouseKeepingView extends JFrame implements ActionListener {
@@ -33,6 +37,8 @@ public class HouseKeepingView extends JFrame implements ActionListener {
 	private JCheckBox otherCheckBox;
 	private JPanel cleaningPanel;
 	private JTextArea txtAreaOtherRequest;
+	private ArrayList<JRadioButton> radioButtons;
+	private JButton btnBack;
 
 	/**
 	 * Launch the application.
@@ -79,6 +85,10 @@ public class HouseKeepingView extends JFrame implements ActionListener {
 	    JScrollPane scrollPane = new JScrollPane();
 	    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 	    contentPane.add(scrollPane, BorderLayout.CENTER);
+	    
+	    btnBack = new JButton("Back");
+	    btnBack.addActionListener(this);
+	    contentPane.add(btnBack,BorderLayout.NORTH);
 
 	    JPanel mainPanel = new JPanel();
 	    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS)); // Stack components vertically
@@ -109,6 +119,10 @@ public class HouseKeepingView extends JFrame implements ActionListener {
 
 	    cleaningPanel.add(radioButtonYes);
 	    cleaningPanel.add(radioButtonNo);
+	    
+	    radioButtons = new ArrayList<>();
+	    radioButtons.add(radioButtonYes);
+	    radioButtons.add(radioButtonNo);
 
 	    JLabel lblAdditionalRequests = new JLabel("Additional Requests:");
 	    cleaningPanel.add(lblAdditionalRequests);
@@ -116,7 +130,7 @@ public class HouseKeepingView extends JFrame implements ActionListener {
 	    checkboxes = new ArrayList<JCheckBox>();
 
 	    for (RequestType r : RequestType.values()) {
-	    	if(!r.equals(RequestType.CLEAN_ROOM) && !r.equals(RequestType.DO_NOT_DISTURB)) {
+	    	if(!r.equals(RequestType.CLEAN_ROOM) && !r.equals(RequestType.DO_NOT_DISTURB) && !r.equals(RequestType.COLLECT_LAUNDRY)) {
 	    		if(!r.equals(RequestType.OTHER)) {
 	    			JCheckBox checkBoxAddRequests = new JCheckBox(r.toString());
 			        checkboxes.add(checkBoxAddRequests);
@@ -147,7 +161,8 @@ public class HouseKeepingView extends JFrame implements ActionListener {
 	            + "There will be an additional payment for the laundry collection request of 10 shekels that will be added to your bill.</html>");
 	    laundryPanel.add(lblLaundryDesc);
 
-	    JCheckBox checkboxLaundry = new JCheckBox("Please collect my laundry");
+	    JCheckBox checkboxLaundry = new JCheckBox(RequestType.COLLECT_LAUNDRY.toString());
+	    checkboxes.add(checkboxLaundry);
 	    laundryPanel.add(checkboxLaundry);
 	    
 	    btnOrder = new JButton("Order");
@@ -162,6 +177,26 @@ public class HouseKeepingView extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getSource()==btnOrder) {
+			for(JCheckBox cb: checkboxes) {
+				if(cb.isSelected()) {
+					String content = null;
+					if(cb.getText().equals("Other")) {
+						content = txtAreaOtherRequest.getText();
+					}
+					
+					RequestType rt = null;
+					for(RequestType rti : RequestType.values()) {
+						if(rti.toString().equals(cb.getText())) {
+							rt = rti;
+						}
+					}
+					
+					Request r = new Request(Hotel.getRoomNumber(),Hotel.getClientID(),LocalDateTime.now(),rt,content);
+					
+					SQLQueries.insertDataIntoTblRequest(r);
+					
+				}
+			}
 			
 		}
 		if(e.getSource()==otherCheckBox) {
@@ -179,6 +214,26 @@ public class HouseKeepingView extends JFrame implements ActionListener {
 	        cleaningPanel.revalidate();
 	        cleaningPanel.repaint();
 	    
+		}
+		for (JRadioButton radioButton : radioButtons) {
+	        if (radioButton.isSelected()) {
+	            
+	            RequestType rt = null;
+				for(RequestType rti : RequestType.values()) {
+					if(rti.toString().equals(radioButton.getText())) {
+						rt = rti;
+					}
+				}
+					
+				Request r = new Request(Hotel.getRoomNumber(),Hotel.getClientID(),LocalDateTime.now(),rt,null);
+					
+				SQLQueries.insertDataIntoTblRequest(r);
+	            
+	        }
+	    }
+		if(e.getSource()==btnBack) {
+			nextFrame.setVisible(true);
+            this.setVisible(false);
 		}
 		
 	}

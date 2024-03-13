@@ -6,7 +6,12 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Clock extends JPanel implements Runnable {
-    private JLabel timeLabel;
+	
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JLabel timeLabel;
     private SimpleDateFormat timeFormat;
 
     public Clock() {

@@ -24,6 +24,17 @@ public class AlarmSettings {
 		this.volume = volume;
 		this.complete = complete;
 	}
+	
+	public AlarmSettings(String clientID, int roomNumber, LocalDateTime alarmDateTime,
+			Ringtone ringtone, int volume) {
+
+		this.clientID = clientID;
+		this.roomNumber = roomNumber;
+		this.alarmDateTime = alarmDateTime;
+		this.ringtone = ringtone;
+		this.volume = volume;
+		this.complete = false;
+	}
 
 	public String getClientID() {
 		return clientID;

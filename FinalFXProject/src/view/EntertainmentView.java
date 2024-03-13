@@ -83,7 +83,7 @@ public class EntertainmentView extends BasicViewTemplate {
 
 
         for(Service s : Hotel.getInstance().getServiceByType(ServiceType.ENTERTAINMENT)) {
-        	JButton btnEnt = createButton(s.getSerivceName());
+        	JButton btnEnt = createButton(s.getServiceName());
         	buttons.add(btnEnt);
         	bottomPanel.add(btnEnt);
         	

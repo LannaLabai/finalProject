@@ -34,6 +34,11 @@ import utils.ServiceType;
 
 public class Hotel implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static Hotel hotel = null;
 
 	private static final String businessID = "1234567";
@@ -60,8 +65,8 @@ public class Hotel implements Serializable {
 	private ArrayList<FoodOrder> foodOrders=null;
 	private HashMap<FoodOrder, ArrayList<FoodOrderItems>> foodOrderItems=null;////////hashmap within it arraylist
 	private HashMap<Integer, Place> places=null;
-	private HashMap<Integer, ArrayList<Session>> sessions=null;
-	private HashMap<Integer, Request> requests=null;
+	private HashMap<Integer, ArrayList<Session>> sessions=new HashMap<>();
+	private ArrayList<Request> requests=null;
 	private HashMap<Integer,Review> reviews=null;
 	
 	//private HashMap<Integer, Room> rooms;
@@ -69,6 +74,16 @@ public class Hotel implements Serializable {
 	private ArrayList<RoomType> roomTypes=null;
 	private HashMap<ServiceType,ArrayList<Service>> services=null;
 	private ArrayList<Update> updates=null;
+	
+	private static HashMap<String,Integer> getServiceIDByService = null;
+	static {
+		getServiceIDByService = new HashMap<>();
+		for(ServiceType st: getInstance().getServices().keySet()) {
+			for(Service s: getInstance().getServices().get(st)) {
+				getServiceIDByService.put(s.getServiceName(), s.getServiceID());
+			}
+		}
+	}
 	
 	
 	/////////////////
@@ -85,6 +100,8 @@ public class Hotel implements Serializable {
 		alarmSettings= SQLQueries.readDataFromTblAlarmSettings(clientID, roomNumber);
 		billItems= new HashMap<>();
 		
+		requests = new ArrayList<>();
+		
 		donationProjects= SQLQueries.readDataFromTblDonationProject();
 		foodItems= SQLQueries.readDataFromTblFoodItem();
 		
@@ -99,6 +116,7 @@ public class Hotel implements Serializable {
 		services= SQLQueries.readDataFromTblService();
 		
 		updates= SQLQueries.readDataFromTblUpdate();
+		
 		 
 	}
 
@@ -162,6 +180,15 @@ public class Hotel implements Serializable {
 
 	
 	
+
+	public static HashMap<String, Integer> getGetServiceIDByService() {
+		return getServiceIDByService;
+	}
+
+	public static void setGetServiceIDByService(HashMap<String, Integer> getServiceIDByService) {
+		Hotel.getServiceIDByService = getServiceIDByService;
+	}
+
 	public ArrayList<AlarmSettings> getAlarmSettings() {
 		return alarmSettings;
 	}
@@ -218,7 +245,7 @@ public class Hotel implements Serializable {
 		return sessions.get(serviceID);
 	}
 
-	public HashMap<Integer, Request> getRequests() {
+	public ArrayList<Request> getRequests() {
 		return requests;
 	}
 
@@ -248,6 +275,13 @@ public class Hotel implements Serializable {
 
 	public void setRoom(Room room) {
 		this.room = room;
+	}
+	
+	public void addSession(Service service, Session session) {
+		if(this.sessions.get(service.getServiceID())==null) {
+			this.sessions.put(service.getServiceID(),new ArrayList<>());
+		}
+		this.sessions.get(service.getServiceID()).add(session);
 	}
 
 	@Override

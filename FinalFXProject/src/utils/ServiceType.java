@@ -1,9 +1,9 @@
 package utils;
 
 public enum ServiceType {
-    GYM_ACTIVITIES("Gym Activities"),
+	GYMACTIVITIES("GymActivities"),
     SPA("Spa"),
-    MANI_PEDI("Manicure and Pedicure"),
+    MANIPEDI("ManiPedi"),
     TRIPS("Trips"),
     BABYSITTING("Babysitting"),
     ENTERTAINMENT("Entertainment"),

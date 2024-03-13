@@ -13,13 +13,19 @@ import model.Hotel;
 
 public class DonationsView extends JFrame implements ActionListener {
 
-    private static final Color GRAY = null;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private static final Color GRAY = null;
+	private JFrame nextFrame;
     private JPanel contentPane;
     private ArrayList<JRadioButton> donationProjectsRadio;
     private ButtonGroup buttonGroup;
     private JButton btnDonate;
     private JTextField txtSum;
     private ArrayList<JLabel> texts;
+    private JButton btnBack;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -36,7 +42,17 @@ public class DonationsView extends JFrame implements ActionListener {
 
     public DonationsView() {
         super("Donations");
+        setBounds(50, 50, 800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        initialize();
+        setVisible(true);
+    }
+    
+    public DonationsView(JFrame nextFrame) {
+        super("Donations");
+        setBounds(50, 50, 800, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.nextFrame = nextFrame;
         initialize();
         setVisible(true);
     }
@@ -48,6 +64,10 @@ public class DonationsView extends JFrame implements ActionListener {
         contentPane.setLayout(new BorderLayout());
 
         texts = new ArrayList<>();
+
+        btnBack = new JButton("Back");
+		btnBack.addActionListener(this);
+		contentPane.add(btnBack, BorderLayout.NORTH);
 
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setOpaque(false);
@@ -80,8 +100,14 @@ public class DonationsView extends JFrame implements ActionListener {
             containerPanel.add(Box.createVerticalStrut(15)); // Spacing between panels
         }
 
+        JLabel lblSum = new JLabel("Sum to Donate: ");
+        lblSum.setBackground(GRAY);
         txtSum = new JTextField(10);
         txtSum.setPreferredSize(new Dimension(150, 30)); // Set preferred size
+        gbc.gridy++;
+        gbc.anchor = GridBagConstraints.CENTER;
+        panel.add(lblSum, gbc);
+        gbc.gridx = 0;
         gbc.gridy++;
         gbc.anchor = GridBagConstraints.CENTER;
         panel.add(txtSum, gbc);
@@ -93,7 +119,6 @@ public class DonationsView extends JFrame implements ActionListener {
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.anchor = GridBagConstraints.CENTER; // Set anchor to center
-        panel.add(btnDonate, gbc);
         panel.add(btnDonate, gbc); // Add button with modified constraints
 
         // Add spacing at the bottom
@@ -123,5 +148,28 @@ public class DonationsView extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // Your actionPerformed method implementation here...
-    }}
+        if(e.getSource() == btnBack) {
+        	nextFrame.setVisible(true);
+            this.setVisible(false);
+        }
+        if(e.getSource() == btnDonate) {
+        	DonationProject selectedProject = null;
+            for (JRadioButton radioButton : donationProjectsRadio) {
+                if (radioButton.isSelected()) {
+                    for (DonationProject dp : Hotel.getInstance().getDonationProjects()) {
+                        if (dp.getDonationProjectName().equals(radioButton.getText())) {
+                            selectedProject = dp;
+                        }
+                    }
+                }
+            }
+            if(selectedProject!=null) {
+            	Donation d= new Donation(selectedProject.getDonationProjectID(), Hotel.getClientID(), Hotel.getRoomNumber(),
+            			Double.parseDouble(txtSum.getText()), LocalDateTime.now());
+            	
+            	SQLQueries.insertDataIntoTblDonation(d);
+            }
+        	
+        }
+    }
+}

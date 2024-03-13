@@ -8,26 +8,40 @@ import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import control.SQLQueries;
+import model.BookedRoomBooksService;
 import model.Hotel;
+import model.Service;
+import model.Session;
+import utils.ServiceType;
 
 
 public class BabysittingView extends JFrame implements ActionListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JFrame nextFrame;
 	private JButton btnOrder;
 	private JComboBox<String> comboBoxStart;
 	private JComboBox<String> comboBoxEnd;
+	private JTextField txtNumChildren;
+	private JButton btnBack;
 
 	/**
 	 * Launch the application.
@@ -78,6 +92,10 @@ public class BabysittingView extends JFrame implements ActionListener {
 	    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS)); // Stack components vertically
 	    scrollPane.setViewportView(mainPanel);
 	    setContentPane(contentPane);
+	    
+	    btnBack = new JButton("Back");
+		btnBack.addActionListener(this);
+		contentPane.add(btnBack,BorderLayout.NORTH);
 
 	    // Add title
 	    JLabel lblTitle = new JLabel("<html><h1>Babysitting</h1></html>");
@@ -95,11 +113,15 @@ public class BabysittingView extends JFrame implements ActionListener {
                 "19:00", "20:00", "21:00", "22:00"};
 	    JLabel lblStart = new JLabel("Drop-off hour: ");
 	    comboBoxStart = new JComboBox<>(hours);
-	    comboBoxStart.setPreferredSize(new Dimension(1, 5));/////////
+	    //comboBoxStart.setPreferredSize(new Dimension(1, 5));/////////
 	    
 	    JLabel lblEnd = new JLabel("Pick-up hour: ");
 	    comboBoxEnd = new JComboBox<>(hours);
-	    comboBoxEnd.setPreferredSize(new Dimension(1, 5));////////
+	    //comboBoxEnd.setPreferredSize(new Dimension(1, 5));////////
+	    
+	    JLabel lblNumChildren = new JLabel("Number of children: ");
+	    txtNumChildren = new JTextField();
+	    //txtNumChildren.setPreferredSize(new Dimension(1, 5));
 	    
 	    btnOrder = new JButton("Order");
 	    btnOrder.addActionListener(this);
@@ -108,19 +130,23 @@ public class BabysittingView extends JFrame implements ActionListener {
 	    mainPanel.add(comboBoxStart);
 	    mainPanel.add(lblEnd);
 	    mainPanel.add(comboBoxEnd);
+	    mainPanel.add(lblNumChildren);
+	    mainPanel.add(txtNumChildren);
 	    mainPanel.add(btnOrder);
 	    
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource()==btnOrder) {
-			String selectedStartHour = (String) comboBoxStart.getSelectedItem();
+	    if (e.getSource() == btnOrder) {
+	        Service service = Hotel.getInstance().getServiceByType(ServiceType.BABYSITTING).get(0);
+	        
+	        String selectedStartHour = (String) comboBoxStart.getSelectedItem();
 	        String selectedEndHour = (String) comboBoxEnd.getSelectedItem();
 	        
-	        // Assuming the format of the hours is "HH:mm"
-	        LocalTime startLocalTime = LocalTime.parse(selectedStartHour);
-	        LocalTime endLocalTime = LocalTime.parse(selectedEndHour);
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
+	        LocalTime startLocalTime = LocalTime.parse(selectedStartHour, formatter);
+	        LocalTime endLocalTime = LocalTime.parse(selectedEndHour, formatter);
 	        
 	        // Assuming today's date for simplicity
 	        LocalDate currentDate = LocalDate.now();
@@ -130,13 +156,28 @@ public class BabysittingView extends JFrame implements ActionListener {
 	        LocalDateTime endDateTime = LocalDateTime.of(currentDate, endLocalTime);
 	        
 	        if (startDateTime.compareTo(endDateTime) < 0) {
-	            //Session session = new Session(Hotel.getInstance().getServices().get)
+	            Session session = new Session(Hotel.getGetServiceIDByService().get("Babysitting"),
+	                    startDateTime, endDateTime, Integer.parseInt(txtNumChildren.getText()));
+	            
+	            Hotel.getInstance().addSession(service, session);
+	            
+	            boolean sessionInserted = SQLQueries.insertDataIntoTblSession(session);
+	            boolean bookingInserted = SQLQueries.insertDataIntoTblBookedRoomBooksService(new BookedRoomBooksService(Hotel.getClientID(), Hotel.getRoomNumber(), SQLQueries.readLastSessionByClient()));
+	            
+	            if (sessionInserted && bookingInserted) {
+	                JOptionPane.showMessageDialog(this, "Order placed successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+	            } else {
+	                JOptionPane.showMessageDialog(this, "Failed to place order.", "Error", JOptionPane.ERROR_MESSAGE);
+	            }
 	        } else {
-	            //throw exception
-	        	;
+	            JOptionPane.showMessageDialog(this, "End time must be after start time.", "Error", JOptionPane.ERROR_MESSAGE);
 	        }
-		}
-		
+	    }
+	    if(e.getSource()==btnBack) {
+	    	nextFrame.setVisible(true);
+            this.setVisible(false);
+	    }
 	}
+
 
 }

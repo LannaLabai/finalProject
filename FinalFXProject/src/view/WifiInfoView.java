@@ -11,8 +11,6 @@ import model.Hotel;
 
 public class WifiInfoView extends BasicViewTemplate {
 
-	private JPanel contentPane;
-
 	/**
 	 * Launch the application.
 	 */

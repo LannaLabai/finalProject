@@ -8,7 +8,7 @@ import utils.*;
 public class Service {
 	
 	private int serviceID;
-	private String serivceName;
+	private String serviceName;
 	private ServiceType serviceType;
 	private int maxNumOfParticipants; 
 	private String serviceDesc;
@@ -19,7 +19,7 @@ public class Service {
 			String serviceDesc) {
 		super();
 		this.serviceID = serviceID;
-		this.serivceName = serivceName;
+		this.serviceName = serivceName;
 		this.serviceType = serviceType;
 		this.maxNumOfParticipants = maxNumOfParticipants;
 		this.serviceDesc = serviceDesc;
@@ -30,11 +30,11 @@ public class Service {
 	public void setSerivceID(int serviceID) {
 		this.serviceID = serviceID;
 	}
-	public String getSerivceName() {
-		return serivceName;
+	public String getServiceName() {
+		return serviceName;
 	}
-	public void setSerivceName(String serivceName) {
-		this.serivceName = serivceName;
+	public void setServiceName(String serivceName) {
+		this.serviceName = serivceName;
 	}
 	public ServiceType getServiceType() {
 		return serviceType;
@@ -65,7 +65,7 @@ public class Service {
 
 	@Override
 	public String toString() {
-		return "Service [serviceID=" + serviceID + ", serivceName=" + serivceName + ", serviceType=" + serviceType
+		return "Service [serviceID=" + serviceID + ", serivceName=" + serviceName + ", serviceType=" + serviceType
 				+ ", maxNumOfParticipants=" + maxNumOfParticipants + ", serviceDesc=" + serviceDesc + "]";
 	}
 	@Override

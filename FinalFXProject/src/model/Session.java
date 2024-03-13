@@ -10,13 +10,15 @@ public class Session {
 	private int sessionID; 
 	private int serviceID;
 	private LocalDateTime sessionDate;
+	private LocalDateTime sessionEndDate;
 	private int numOfParticipants;
 	
 	//for inserting
-	public Session(int serviceID, LocalDateTime sessionDate, int numOfParticipants) {
+	public Session(int serviceID, LocalDateTime sessionDate, LocalDateTime sessionEndDate, int numOfParticipants) {
 		super();
 		this.serviceID = serviceID;
 		this.sessionDate = sessionDate;
+		this.sessionEndDate = sessionEndDate;
 		this.numOfParticipants = numOfParticipants;
 	}
 
@@ -51,6 +53,15 @@ public class Session {
 
 	public void setNumOfParticipants(int numOfParticipants) {
 		this.numOfParticipants = numOfParticipants;
+	}
+	
+
+	public LocalDateTime getSessionEndDate() {
+		return sessionEndDate;
+	}
+
+	public void setSessionEndDate(LocalDateTime sessionEndDate) {
+		this.sessionEndDate = sessionEndDate;
 	}
 
 	@Override

@@ -20,6 +20,7 @@ public class RoomServiceView extends JFrame implements ActionListener {
 	private JPanel contentPane;
 	private JFrame nextFrame;
 	private JButton btnOrder;
+	private JButton btnBack;
 	
 	private ArrayList<FoodOrderItems> foodOrderItems;
 	
@@ -60,7 +61,11 @@ public class RoomServiceView extends JFrame implements ActionListener {
     	contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
-        contentPane.setLayout(new BorderLayout(0, 0));
+        contentPane.setLayout(new BorderLayout());
+        
+        btnBack = new JButton("Back");
+        btnBack.addActionListener(this);
+        contentPane.add(btnBack,BorderLayout.NORTH);
 
         JScrollPane scrollPane = new JScrollPane();
         contentPane.add(scrollPane, BorderLayout.CENTER);
@@ -123,6 +128,10 @@ public class RoomServiceView extends JFrame implements ActionListener {
         		
         	}
         }
+        if(e.getSource()==btnBack) {
+			nextFrame.setVisible(true);
+            this.setVisible(false);
+		}
     }
 
  

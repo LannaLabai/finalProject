@@ -23,6 +23,9 @@ public class Consts {
 			+ " WHERE clientID = ? AND roomNumber = ?"
 			+ " ORDER BY foodOrderID DESC;";
 	
+	public static final String READ_LAST_SESSION_BY_CLIENT = "SELECT TOP 1 * FROM tblSession"
+			+ " ORDER BY sessionID DESC;";
+	
 	public static final String READ_ROOM_INFO = "SELECT TOP 1 * FROM tblRoom WHERE roomNumber = ? ";
 	public static final String READ_TBL_UPDATE = "SELECT * FROM tblUpdate";
 	
@@ -38,7 +41,7 @@ public class Consts {
 	public final static String SQL_INSERT_INTO_REQUESTS = "INSERT INTO tblRequest (roomNumber, clientID,requestDate, requestType, requestContent,complete) VALUES (?,?,?,?,?,?)";
 	public final static String SQL_INSERT_INTO_DONATION = "INSERT INTO tblDonation (donationProjectID, clientID, roomNumber, donationSum, donationDate) VALUES (?,?,?,?,?)";
 	public final static String SQL_INSERT_INTO_BOOKED_ROOM_BOOKS_SERVICE = "INSERT INTO tblBookedRoomBooksService (clientID, roomNumber, sessionID) VALUES (?,?,?)";
-	public final static String SQL_INSERT_INTO_SESSION = "INSERT INTO tblSession (serviceID, serviceDate, numOfParticipants) VALUES (?,?,?)";
+	public final static String SQL_INSERT_INTO_SESSION = "INSERT INTO tblSession (serviceID, sessionDate, sessionEndDate,numOfParticipants) VALUES (?,?,?,?)";
 	public final static String SQL_INSERT_INTO_ALARM_SETTINGS = "INSERT INTO tblAlarmSettings (clientID, roomNumber, alarmDateTime,ringtone, volume, complete) VALUES (?,?,?,?,?,?)";
 	public final static String SQL_INSERT_INTO_REVIEW = "INSERT INTO tblReview (reviewContent, rating, clientID, reviewsDate) VALUES (?,?,?,?)";
 
@@ -46,7 +49,7 @@ public class Consts {
 	public final static String SQL_UPDATE_ALARM_SETTINGS = "UPDATE tblAlarmSettings SET " +
             "alarmDateTime = ?, ringtone = ?, volume = ?, complete = ? WHERE alarmID = ?";
 	public final static String SQL_UPDATE_SESSION = "UPDATE tblSession SET " +
-            "sessionDate = ?, numOfParticipants = ? WHERE sessionID = ?";
+            "sessionDate = ?, sessionEndDate = ?, numOfParticipants = ? WHERE sessionID = ?";
 	
 	//delete
 	public final static String SQL_DELETE_FROM_TBL_ALARM_SETTINGS = "DELETE FROM tblAlarmSettings WHERE alarmID = ?";

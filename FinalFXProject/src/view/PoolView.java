@@ -7,6 +7,9 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.border.*;
 
+import model.Hotel;
+import utils.ServiceType;
+
 public class PoolView extends BasicViewTemplate {
 
 
@@ -40,7 +43,10 @@ public class PoolView extends BasicViewTemplate {
 	
 	@Override
 	public void initialize() {
+		initializeDefault();
 		
+		lblTitle.setText("<html><h1>Pool</h1></html>");
+		lblSubtext.setText(Hotel.getInstance().getServiceByType(ServiceType.POOL).get(0).getServiceDesc());
 	}
 
 }

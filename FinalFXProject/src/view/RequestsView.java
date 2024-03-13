@@ -10,6 +10,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -26,6 +27,7 @@ public class RequestsView extends JFrame implements ActionListener {
 	private JPanel contentPane;
 	private JButton btnSend;
 	private JTextArea txtArea;
+	private JButton btnBack;
 
 	/**
 	 * Launch the application.
@@ -101,18 +103,30 @@ public class RequestsView extends JFrame implements ActionListener {
 	    btnSend.addActionListener(this); 
 	    panel.add(btnSend);
 	    
+	    btnBack = new JButton("Back");
+	    btnBack.addActionListener(this); 
+	    contentPane.add(btnBack,BorderLayout.NORTH);
+	    
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource()==btnSend) {
-			Request request = new Request(Hotel.getRoomNumber(), Hotel.getClientID(),LocalDateTime.now(), 
-					RequestType.OTHER,txtArea.getText());
-			System.out.println(request);
-			SQLQueries.insertDataIntoTblRequest(request);
-			//add success message
-		}
-		
+	    if (e.getSource() == btnSend) {
+	        Request request = new Request(Hotel.getRoomNumber(), Hotel.getClientID(), LocalDateTime.now(), 
+	                RequestType.OTHER, txtArea.getText());
+	        Hotel.getInstance().getRequests().add(request);
+	        boolean success = SQLQueries.insertDataIntoTblRequest(request);
+	        if (success) {
+	            JOptionPane.showMessageDialog(this, "Request sent successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+	        } else {
+	            JOptionPane.showMessageDialog(this, "Failed to send request.", "Error", JOptionPane.ERROR_MESSAGE);
+	        }
+	    }
+	    if (e.getSource() == btnBack) {
+	        nextFrame.setVisible(true);
+	        this.setVisible(false);
+	    }
 	}
+
 
 }

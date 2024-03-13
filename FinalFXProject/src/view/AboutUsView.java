@@ -9,6 +9,7 @@ import model.*;
 public class AboutUsView extends JFrame implements ActionListener {
 
     private JFrame nextFrame;
+    private JButton btnBack;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -59,6 +60,11 @@ public class AboutUsView extends JFrame implements ActionListener {
         contentPane.setOpaque(false); // Make the panel transparent
         contentPane.setBorder(new EmptyBorder(10, 10, 10, 10));
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS)); // Vertical BoxLayout
+        
+
+        btnBack = new JButton("Back");
+        btnBack.addActionListener(this);
+        contentPane.add(btnBack);
 
         // Add sections before "More About Our Rooms"
         addSections(contentPane);
@@ -79,7 +85,7 @@ public class AboutUsView extends JFrame implements ActionListener {
         layeredPane.add(scrollPane);
 
         // Add background label to layered pane
-        layeredPane.add(backgroundLabel, new Integer(Integer.MIN_VALUE));
+        layeredPane.add(backgroundLabel, Integer.MIN_VALUE);
 
         // Set layered pane as content pane
         setContentPane(layeredPane);
@@ -189,5 +195,9 @@ public class AboutUsView extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+    	if(e.getSource()==btnBack) {
+    		nextFrame.setVisible(true);
+            this.setVisible(false);
+    	}
     }
 }

@@ -149,6 +149,29 @@ public class SQLQueries {
 	    return foodOrderID;
 	}
 	
+	public static int readLastSessionByClient() {
+	    Connection connection = null;
+	    int sessionID = -1; 
+
+	    try {
+	        connection = AccessDatabaseConnection.connect();
+	        PreparedStatement statement = connection.prepareStatement(Consts.READ_LAST_SESSION_BY_CLIENT);
+	        
+	        ResultSet resultSet = statement.executeQuery();
+	        
+	        if (resultSet.next()) {
+	        	sessionID = resultSet.getInt("sessionID");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        AccessDatabaseConnection.disconnect(connection);
+	    }
+
+	    return sessionID;
+	}
+	
 	public static ArrayList<RoomType> readDataFromTblRoomType() {
 		ArrayList<RoomType> roomTypes = new ArrayList<>();
         Connection connection = null;
@@ -387,7 +410,7 @@ public class SQLQueries {
 		
 		for(ServiceType st: Hotel.getInstance().getServices().keySet()) {
 			for(Service s: Hotel.getInstance().getServices().get(st)) {
-				if(s.getSerivceName()!="Spa" && s.getSerivceName()!="Gym") {
+				if(s.getServiceName()!="Spa" && s.getServiceName()!="Gym") {
 					serviceIDs.add(s.getServiceID());
 				}
 			}
@@ -414,9 +437,10 @@ public class SQLQueries {
             while (resultSet.next()) {
                 int sessionID = resultSet.getInt("sessionID");
                 LocalDateTime sessionDate = resultSet.getTimestamp("sessionDate").toLocalDateTime();
+                LocalDateTime sessionEndDate = resultSet.getTimestamp("sessionEndDate").toLocalDateTime();
                 int numOfParticipants = resultSet.getInt("numOfParticipants");
 
-                Session session = new Session(serviceID, sessionDate, numOfParticipants);
+                Session session = new Session(serviceID, sessionDate, sessionEndDate, numOfParticipants);
                 session.setSessionID(sessionID);
                 sessions.add(session);
             }
@@ -512,7 +536,7 @@ public class SQLQueries {
 	
 	
 	//insert data into tables
-	public static void insertDataIntoTblFoodOrder(FoodOrder foodOrder) {
+	public static boolean insertDataIntoTblFoodOrder(FoodOrder foodOrder) {
         Connection connection = null;
         try {
             connection = AccessDatabaseConnection.connect();
@@ -527,18 +551,17 @@ public class SQLQueries {
             int rowsInserted = statement.executeUpdate();
 
             if (rowsInserted > 0) {
-                System.out.println("FoodOrder inserted successfully.");
-            } else {
-                System.out.println("Failed to insert FoodOrder.");
+                return true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             AccessDatabaseConnection.disconnect(connection);
         }
+        return false;
     }
 	
-	public static void insertDataIntoTblFoodOrderItems(FoodOrderItems foodOrderItem) {
+	public static boolean insertDataIntoTblFoodOrderItems(FoodOrderItems foodOrderItem) {
         Connection connection = null;
         try {
             connection = AccessDatabaseConnection.connect();
@@ -554,18 +577,17 @@ public class SQLQueries {
 
             // Check if insertion was successful
             if (rowsInserted > 0) {
-                System.out.println("FoodOrderItem inserted successfully.");
-            } else {
-                System.out.println("Failed to insert FoodOrderItem.");
+                return true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             AccessDatabaseConnection.disconnect(connection);
         }
+        return false;
     }
 	
-	public static void insertDataIntoTblRequest(Request request) {
+	public static boolean insertDataIntoTblRequest(Request request) {
         Connection connection = null;
         try {
             connection = AccessDatabaseConnection.connect();
@@ -581,18 +603,17 @@ public class SQLQueries {
             int rowsInserted = statement.executeUpdate();
 
             if (rowsInserted > 0) {
-                System.out.println("FoodOrder inserted successfully.");
-            } else {
-                System.out.println("Failed to insert FoodOrder.");
-            }
+                return true;
+            } 
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             AccessDatabaseConnection.disconnect(connection);
         }
+        return false;
     }
 	
-	public static void insertDataIntoTblDonation(Donation donation) {
+	public static boolean insertDataIntoTblDonation(Donation donation) {
 	    Connection connection = null;
 	    try {
 	        connection = AccessDatabaseConnection.connect();
@@ -607,19 +628,18 @@ public class SQLQueries {
 	        int rowsInserted = statement.executeUpdate();
 
 	        if (rowsInserted > 0) {
-	            System.out.println("Donation inserted successfully.");
-	        } else {
-	            System.out.println("Failed to insert Donation.");
-	        }
+	            return true;
+	        } 
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    } finally {
 	        AccessDatabaseConnection.disconnect(connection);
 	    }
+	    return false;
 	}
 	
 	//session
-	public static void insertDataIntoTblSession(Session session) {
+	public static boolean insertDataIntoTblSession(Session session) {
 	    Connection connection = null;
 	    try {
 	        connection = AccessDatabaseConnection.connect();
@@ -627,24 +647,24 @@ public class SQLQueries {
 
 	        statement.setInt(1, session.getServiceID());
 	        statement.setTimestamp(2, Timestamp.valueOf(session.getSessionDate()));
-	        statement.setInt(3, session.getNumOfParticipants());
+	        statement.setTimestamp(3, Timestamp.valueOf(session.getSessionEndDate()));
+	        statement.setInt(4, session.getNumOfParticipants());
 
 	        int rowsInserted = statement.executeUpdate();
 
 	        if (rowsInserted > 0) {
-	            System.out.println("Session inserted successfully.");
-	        } else {
-	            System.out.println("Failed to insert Session.");
+	            return true;
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    } finally {
 	        AccessDatabaseConnection.disconnect(connection);
 	    }
+		return false;
 	}
 	
 	//alarm settings
-	public static void insertDataIntoTblAlarmSettings(AlarmSettings alarmSettings) {
+	public static boolean insertDataIntoTblAlarmSettings(AlarmSettings alarmSettings) {
         Connection connection = null;
         try {
             connection = AccessDatabaseConnection.connect();
@@ -660,19 +680,18 @@ public class SQLQueries {
             int rowsInserted = statement.executeUpdate();
 
             if (rowsInserted > 0) {
-                System.out.println("Alarm settings inserted successfully.");
-            } else {
-                System.out.println("Failed to insert alarm settings.");
+                return true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             AccessDatabaseConnection.disconnect(connection);
         }
+        return false;
     }
 	
 	//review
-	public static void insertDataIntoTblReview(Review review) {
+	public static boolean insertDataIntoTblReview(Review review) {
         Connection connection = null;
         try {
             connection = AccessDatabaseConnection.connect();
@@ -686,20 +705,19 @@ public class SQLQueries {
             int rowsInserted = statement.executeUpdate();
 
             if (rowsInserted > 0) {
-                System.out.println("Review inserted successfully.");
-            } else {
-                System.out.println("Failed to insert review.");
+                return true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             AccessDatabaseConnection.disconnect(connection);
         }
+        return false;
     }
 
 	
 	//booked room books service
-	public static void insertDataIntoTblBookedRoomBooksService(BookedRoomBooksService booking) {
+	public static boolean insertDataIntoTblBookedRoomBooksService(BookedRoomBooksService booking) {
 	    Connection connection = null;
 	    try {
 	        connection = AccessDatabaseConnection.connect();
@@ -712,21 +730,20 @@ public class SQLQueries {
 	        int rowsInserted = statement.executeUpdate();
 
 	        if (rowsInserted > 0) {
-	            System.out.println("Booking inserted successfully.");
-	        } else {
-	            System.out.println("Failed to insert Booking.");
+	            return true;
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    } finally {
 	        AccessDatabaseConnection.disconnect(connection);
 	    }
+	    return false;
 	}
 	
 	//update functions
 	//alarm settings
 	
-	public static void updateAlarmSettings(AlarmSettings alarmSettings) {
+	public static boolean updateAlarmSettings(AlarmSettings alarmSettings) {
         Connection connection = null;
         try {
             connection = AccessDatabaseConnection.connect();
@@ -741,44 +758,43 @@ public class SQLQueries {
             int rowsUpdated = statement.executeUpdate();
 
             if (rowsUpdated > 0) {
-                System.out.println("Alarm settings updated successfully.");
-            } else {
-                System.out.println("Failed to update alarm settings.");
+                return true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             AccessDatabaseConnection.disconnect(connection);
         }
+        return false;
     }
 	
-	public static void updateSession(Session session) {
+	public static boolean updateSession(Session session) {
         Connection connection = null;
         try {
             connection = AccessDatabaseConnection.connect();
             PreparedStatement statement = connection.prepareStatement(Consts.SQL_UPDATE_SESSION);
 
             statement.setTimestamp(1, Timestamp.valueOf(session.getSessionDate()));
-            statement.setInt(2, session.getNumOfParticipants());
-            statement.setInt(3, session.getSessionID());
+            statement.setTimestamp(2, Timestamp.valueOf(session.getSessionEndDate()));
+            statement.setInt(3, session.getNumOfParticipants());
+            statement.setInt(4, session.getSessionID());
 
             int rowsUpdated = statement.executeUpdate();
 
             if (rowsUpdated > 0) {
-                System.out.println("Session updated successfully.");
-            } else {
-                System.out.println("Failed to update session.");
+                return true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             AccessDatabaseConnection.disconnect(connection);
         }
+        return false;
     }
 	
 	//delete
 	//session
-	public static void deleteSession(int sessionID) {
+	public static boolean deleteSession(int sessionID) {
         Connection connection = null;
         try {
             connection = AccessDatabaseConnection.connect();
@@ -789,19 +805,18 @@ public class SQLQueries {
             int rowsDeleted = statement.executeUpdate();
 
             if (rowsDeleted > 0) {
-                System.out.println("Session deleted successfully.");
-            } else {
-                System.out.println("No session found with the specified sessionID.");
+                return true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             AccessDatabaseConnection.disconnect(connection);
         }
+        return false;
     }
 	
 	//alarm settings
-	public static void deleteAlarmSettings(int alarmID) {
+	public static boolean deleteAlarmSettings(int alarmID) {
         Connection connection = null;
         try {
             connection = AccessDatabaseConnection.connect();
@@ -812,19 +827,18 @@ public class SQLQueries {
             int rowsDeleted = statement.executeUpdate();
 
             if (rowsDeleted > 0) {
-                System.out.println("Alarm settings deleted successfully.");
-            } else {
-                System.out.println("No alarm settings found with the specified alarmID.");
+                return true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             AccessDatabaseConnection.disconnect(connection);
         }
+        return false;
     }
 	
 	//booked room books service
-	public static void deleteBookedRoomBooksService(int sessionID) {
+	public static boolean deleteBookedRoomBooksService(int sessionID) {
         Connection connection = null;
         try {
             connection = AccessDatabaseConnection.connect();
@@ -835,15 +849,14 @@ public class SQLQueries {
             int rowsDeleted = statement.executeUpdate();
 
             if (rowsDeleted > 0) {
-                System.out.println("Booked room books service deleted successfully.");
-            } else {
-                System.out.println("No booked room books service found with the specified sessionID.");
+                return true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             AccessDatabaseConnection.disconnect(connection);
         }
+        return false;
     }
 
 }
