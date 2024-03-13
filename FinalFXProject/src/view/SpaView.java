@@ -14,6 +14,7 @@ import javax.swing.border.*;
 import control.SQLQueries;
 import model.BookedRoomBooksService;
 import model.Hotel;
+import model.PaidService;
 import model.Service;
 import model.Session;
 import utils.ServiceType;
@@ -26,6 +27,7 @@ public class SpaView extends BasicViewTemplate {
 	private JComboBox<String> comboBoxTime;
 	private JTextField txtNumParticipants;
 	private JComboBox<String> comboBoxSpa;
+	private JLabel spaPrice;
 
 	/**
 	 * Launch the application.
@@ -84,6 +86,9 @@ public class SpaView extends BasicViewTemplate {
 		
 		JLabel lblChooseService = new JLabel("Desired spa service: ");
 		comboBoxSpa = new JComboBox<>(spaServices);
+		comboBoxSpa.addActionListener(this);
+		
+		spaPrice = new JLabel("");
 		
 		JLabel lblSpaDate = new JLabel("Spa date: ");
         LocalDate today = LocalDate.now();
@@ -109,6 +114,7 @@ public class SpaView extends BasicViewTemplate {
 
 		orderSpaPanel.add(lblChooseService);
 		orderSpaPanel.add(comboBoxSpa);
+		orderSpaPanel.add(spaPrice);
 		orderSpaPanel.add(lblSpaDate);
 		orderSpaPanel.add(comboBoxDates);
 		orderSpaPanel.add(lblSpaTime);
@@ -122,35 +128,61 @@ public class SpaView extends BasicViewTemplate {
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		super.actionPerformed(e);
-		if(e.getSource()==btnOrder) {
-			Service service = null;
-			for(Service ser : Hotel.getInstance().getServiceByType(ServiceType.SPA)) {
-				if(ser.getServiceName().equals(comboBoxSpa.getSelectedItem())) {
-					service = ser;
-				}
-			}
-			
-			String selectedDate = (String) comboBoxDates.getSelectedItem();
-			LocalDate date = LocalDate.parse(selectedDate);
+	    super.actionPerformed(e);
+	    if (e.getSource() == btnOrder) {
+	        Service service = null;
+	        for (Service ser : Hotel.getInstance().getServiceByType(ServiceType.SPA)) {
+	            if (ser.getServiceName().equals(comboBoxSpa.getSelectedItem())) {
+	                service = ser;
+	                break; // Exit loop once found
+	            }
+	        }
 
-			String selectedTime = (String) comboBoxTime.getSelectedItem();
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
-			LocalTime time = LocalTime.parse(selectedTime, formatter);
+	        String selectedDate = (String) comboBoxDates.getSelectedItem();
+	        LocalDate date = LocalDate.parse(selectedDate);
 
-			LocalDateTime dateTime = date.atTime(time);
-			
-			if(Integer.parseInt(txtNumParticipants.getText())>service.getMaxNumOfParticipants()) {
-				//throw new exception
-			}
-			
-			Session s = new Session(service.getServiceID(), dateTime, dateTime.plusHours(1),Integer.parseInt(txtNumParticipants.getText()));
-			
-			Hotel.getInstance().addSession(service, s);
-			SQLQueries.insertDataIntoTblSession(s);
-			SQLQueries.insertDataIntoTblBookedRoomBooksService(new BookedRoomBooksService(Hotel.getClientID(),Hotel.getRoomNumber(),SQLQueries.readLastSessionByClient()));
-		}
-		
+	        String selectedTime = (String) comboBoxTime.getSelectedItem();
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
+	        LocalTime time = LocalTime.parse(selectedTime, formatter);
+
+	        LocalDateTime dateTime = date.atTime(time);
+
+	        if (service != null) {
+	            if (Integer.parseInt(txtNumParticipants.getText()) > service.getMaxNumOfParticipants()) {
+	                JOptionPane.showMessageDialog(this, "Number of participants exceeds maximum limit.", "Error", JOptionPane.ERROR_MESSAGE);
+	                return; // Stop further processing
+	            }
+
+	            Session s = new Session(service.getServiceID(), dateTime, dateTime.plusHours(1), Integer.parseInt(txtNumParticipants.getText()));
+
+	            boolean success = SQLQueries.insertDataIntoTblSession(s);
+	            if (success) {
+	                Hotel.getInstance().addSession(service, s);
+	                SQLQueries.insertDataIntoTblBookedRoomBooksService(new BookedRoomBooksService(Hotel.getClientID(), Hotel.getRoomNumber(), SQLQueries.readLastSessionByClient()));
+	                JOptionPane.showMessageDialog(this, "Session booked successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+	            } else {
+	                JOptionPane.showMessageDialog(this, "Failed to book session.", "Error", JOptionPane.ERROR_MESSAGE);
+	            }
+	        } else {
+	            JOptionPane.showMessageDialog(this, "Please select a service.", "Error", JOptionPane.ERROR_MESSAGE);
+	        }
+	    }
+	    if(e.getSource()==comboBoxSpa) {
+	    	if(comboBoxSpa.getSelectedItem()!=null) {
+	    		Service service = null;
+		        for (Service ser : Hotel.getInstance().getServiceByType(ServiceType.SPA)) {
+		            if (ser.getServiceName().equals(comboBoxSpa.getSelectedItem())) {
+		                service = ser;
+		            }
+		        }
+		        
+		        if(service instanceof PaidService) {
+		        	PaidService ps = (PaidService)service;
+		        	spaPrice.setText("Total price: " + String.valueOf(ps.getServiceCost()));
+		        }
+	    	}
+	    }
 	}
+
 
 }

@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -20,6 +21,7 @@ import javax.swing.border.EmptyBorder;
 import control.SQLQueries;
 import model.BookedRoomBooksService;
 import model.Hotel;
+import model.PaidService;
 import model.Service;
 import model.Session;
 import utils.ServiceType;
@@ -31,6 +33,7 @@ public class GymActivitiesView extends BasicViewTemplate {
 	private JComboBox<String> comboBoxTime;
 	private JTextField txtNumParticipants;
 	private JComboBox<String> comboBoxActivities;
+	private JLabel lblCost;
 
 	/**
 	 * Launch the application.
@@ -65,9 +68,11 @@ public class GymActivitiesView extends BasicViewTemplate {
 		
 		contentPane.add(btnBack,BorderLayout.NORTH);
 		
-		JPanel orderSpaPanel = new JPanel();
-		orderSpaPanel.setLayout(new BoxLayout(orderSpaPanel, BoxLayout.Y_AXIS));
-		mainPanel.add(orderSpaPanel);
+		JPanel orderGymActivity = new JPanel();
+		orderGymActivity.setLayout(new BoxLayout(orderGymActivity, BoxLayout.Y_AXIS));
+		mainPanel.add(orderGymActivity);
+		
+		lblCost = new JLabel("");
 		
 		lblTitle.setText("<html><h1>Gym Activities</h1></html>");
 		String desc = "";
@@ -88,10 +93,12 @@ public class GymActivitiesView extends BasicViewTemplate {
 		lblSubtext.setText(desc);
 
 		JLabel lblOrder = new JLabel("You can sign up for a gym activity by filling out the form below:");
-		orderSpaPanel.add(lblOrder);
+		orderGymActivity.add(lblOrder);
 		
 		JLabel lblChooseService = new JLabel("Desired gym activity: ");
 		comboBoxActivities = new JComboBox<>(gymServices);
+		
+		comboBoxActivities.addActionListener(this);
 		
 		JLabel lblActivityDate = new JLabel("Activity date: ");
         LocalDate today = LocalDate.now();
@@ -115,52 +122,77 @@ public class GymActivitiesView extends BasicViewTemplate {
 		btnOrder = new JButton("Sign Up");
 		btnOrder.addActionListener(this);
 
-		orderSpaPanel.add(lblChooseService);
-		orderSpaPanel.add(comboBoxActivities);
-		orderSpaPanel.add(lblActivityDate);
-		orderSpaPanel.add(comboBoxDates);
-		orderSpaPanel.add(lblActivityTime);
-		orderSpaPanel.add(comboBoxTime);
-		orderSpaPanel.add(lblNumParticipants);
-		orderSpaPanel.add(txtNumParticipants);
-		orderSpaPanel.add(btnOrder);
+		orderGymActivity.add(lblChooseService);
+		orderGymActivity.add(comboBoxActivities);
+		orderGymActivity.add(lblCost);
+		orderGymActivity.add(lblActivityDate);
+		orderGymActivity.add(comboBoxDates);
+		orderGymActivity.add(lblActivityTime);
+		orderGymActivity.add(comboBoxTime);
+		orderGymActivity.add(lblNumParticipants);
+		orderGymActivity.add(txtNumParticipants);
+		orderGymActivity.add(btnOrder);
 		
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		super.actionPerformed(e);
-		if(e.getSource()==btnOrder) {
-			Service service = null;
-			for(Service ser : Hotel.getInstance().getServiceByType(ServiceType.GYMACTIVITIES)) {
-				if(ser.getServiceName().equals(comboBoxActivities.getSelectedItem())) {
-					service = ser;
-				}
-			}
-			
-			String selectedDate = (String) comboBoxDates.getSelectedItem();
-			LocalDate date = LocalDate.parse(selectedDate);
+	    super.actionPerformed(e);
+	    if (e.getSource() == btnOrder) {
+	        Service service = null;
+	        for (Service ser : Hotel.getInstance().getServiceByType(ServiceType.GYMACTIVITIES)) {
+	            if (ser.getServiceName().equals(comboBoxActivities.getSelectedItem())) {
+	                service = ser;
+	                break; // Exit loop once found
+	            }
+	        }
+	        
+	        String selectedDate = (String) comboBoxDates.getSelectedItem();
+	        LocalDate date = LocalDate.parse(selectedDate);
 
-			String selectedTime = (String) comboBoxTime.getSelectedItem();
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
-			LocalTime time = LocalTime.parse(selectedTime, formatter);
+	        String selectedTime = (String) comboBoxTime.getSelectedItem();
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
+	        LocalTime time = LocalTime.parse(selectedTime, formatter);
 
-			LocalDateTime dateTime = date.atTime(time);
-			
-			if(Integer.parseInt(txtNumParticipants.getText())>service.getMaxNumOfParticipants()) {
-				//throw new exception
-			}
-			
-			Session s = new Session(service.getServiceID(), dateTime, dateTime.plusHours(1),Integer.parseInt(txtNumParticipants.getText()));
-			
-			Hotel.getInstance().addSession(service, s);
-			SQLQueries.insertDataIntoTblSession(s);
-			SQLQueries.insertDataIntoTblBookedRoomBooksService(new BookedRoomBooksService(Hotel.getClientID(),Hotel.getRoomNumber(),SQLQueries.readLastSessionByClient()));
-		}
-		if(e.getSource()==btnBack) {
-			nextFrame.setVisible(true);
-            this.setVisible(false);
-		}
+	        LocalDateTime dateTime = date.atTime(time);
+	        
+	        int numParticipants = Integer.parseInt(txtNumParticipants.getText());
+	        if (numParticipants > service.getMaxNumOfParticipants()) {
+	            JOptionPane.showMessageDialog(this, "Number of participants exceeds maximum capacity.", "Error", JOptionPane.ERROR_MESSAGE);
+	            return; // Exit method early
+	        }
+	        
+	        Session s = new Session(service.getServiceID(), dateTime, dateTime.plusHours(1), numParticipants);
+	        
+	        boolean success = SQLQueries.insertDataIntoTblSession(s);
+	        if (success) {
+	            Hotel.getInstance().addSession(service, s);
+	            SQLQueries.insertDataIntoTblBookedRoomBooksService(new BookedRoomBooksService(Hotel.getClientID(), Hotel.getRoomNumber(), SQLQueries.readLastSessionByClient()));
+	            JOptionPane.showMessageDialog(this, "Order placed successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+	        } else {
+	            JOptionPane.showMessageDialog(this, "Failed to place order.", "Error", JOptionPane.ERROR_MESSAGE);
+	        }
+	    }
+	    if (e.getSource() == btnBack) {
+	        nextFrame.setVisible(true);
+	        this.setVisible(false);
+	    }
+	    if(e.getSource()==comboBoxActivities) {
+	    	if(comboBoxActivities.getSelectedItem()!=null) {
+	    		Service service = null;
+		        for (Service ser : Hotel.getInstance().getServiceByType(ServiceType.GYMACTIVITIES)) {
+		            if (ser.getServiceName().equals(comboBoxActivities.getSelectedItem())) {
+		                service = ser;
+		            }
+		        }
+		        
+		        if(service instanceof PaidService) {
+		        	PaidService ps = (PaidService)service;
+		        	lblCost.setText("Total price: " + String.valueOf(ps.getServiceCost()));
+		        }
+	    	}
+	    }
 	}
+
 
 }

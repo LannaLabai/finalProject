@@ -16,6 +16,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -115,62 +116,63 @@ public class ManicureAndPedicureView extends BasicViewTemplate {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
-		super.actionPerformed(e);
-		if(e.getSource()==btnOrder) {
-			Service manicure = null;
-			Service pedicure = null;
-			
-			for(Service ser : Hotel.getInstance().getServiceByType(ServiceType.MANIPEDI)) {
-				if(ser.getServiceName().equals("Manicure")) {
-					if(checkBoxMani.isSelected()) {
-						manicure = ser;
-					}
-				}
-			}
-			
-			for(Service ser : Hotel.getInstance().getServiceByType(ServiceType.MANIPEDI)) {
-				if(ser.getServiceName().equals("Pedicure")) {
-					if(checkBoxPedi.isSelected()) {
-						pedicure = ser;
-					}
-				}
-				
-			}
-			
-			String selectedDate = (String) comboBoxDates.getSelectedItem();
-			LocalDate date = LocalDate.parse(selectedDate);
-
-			String selectedTime = (String) comboBoxTime.getSelectedItem();
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
-			LocalTime time = LocalTime.parse(selectedTime, formatter);
-
-			LocalDateTime dateTime = date.atTime(time);
-			
-			if(manicure!=null && pedicure==null) {
-				newSession(manicure, dateTime);
-			}
-			if(pedicure!=null  && manicure==null) {
-				newSession(pedicure, dateTime);
-			}
-			if(manicure!=null && pedicure!=null) {
-				newSession(manicure, dateTime);
-				time = LocalTime.parse(selectedTime, formatter).plusMinutes(45);
-				dateTime = date.atTime(time);
-				newSession(pedicure, dateTime);
-			}
-			
-			
-		}
-		
+	    super.actionPerformed(e);
+	    if (e.getSource() == btnOrder) {
+	        Service manicure = null;
+	        Service pedicure = null;
+	        
+	        // Find selected manicure service
+	        for (Service ser : Hotel.getInstance().getServiceByType(ServiceType.MANIPEDI)) {
+	            if (ser.getServiceName().equals("Manicure") && checkBoxMani.isSelected()) {
+	                manicure = ser;
+	                break; // Exit loop once found
+	            }
+	        }
+	        
+	        // Find selected pedicure service
+	        for (Service ser : Hotel.getInstance().getServiceByType(ServiceType.MANIPEDI)) {
+	            if (ser.getServiceName().equals("Pedicure") && checkBoxPedi.isSelected()) {
+	                pedicure = ser;
+	                break; // Exit loop once found
+	            }
+	        }
+	        
+	        // Get selected date and time
+	        String selectedDate = (String) comboBoxDates.getSelectedItem();
+	        LocalDate date = LocalDate.parse(selectedDate);
+	        String selectedTime = (String) comboBoxTime.getSelectedItem();
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
+	        LocalTime time = LocalTime.parse(selectedTime, formatter);
+	        LocalDateTime dateTime = date.atTime(time);
+	        
+	        // Book sessions based on selected services
+	        if (manicure != null && pedicure == null) {
+	            bookSession(manicure, dateTime);
+	        }
+	        if (pedicure != null && manicure == null) {
+	            bookSession(pedicure, dateTime);
+	        }
+	        if (manicure != null && pedicure != null) {
+	            bookSession(manicure, dateTime);
+	            time = time.plusMinutes(45);
+	            dateTime = date.atTime(time);
+	            bookSession(pedicure, dateTime);
+	        }
+	    }
 	}
-	
-	public void newSession(Service service, LocalDateTime dateTime) {
-		Session s = new Session(service.getServiceID(), dateTime,dateTime.plusMinutes(45), numParticipants);
-		
-		Hotel.getInstance().addSession(service, s);
-		SQLQueries.insertDataIntoTblSession(s);
-		SQLQueries.insertDataIntoTblBookedRoomBooksService(new BookedRoomBooksService(Hotel.getClientID(),Hotel.getRoomNumber(),SQLQueries.readLastSessionByClient()));
+
+	public void bookSession(Service service, LocalDateTime dateTime) {
+	    Session s = new Session(service.getServiceID(), dateTime, dateTime.plusMinutes(45), numParticipants);
+	    
+	    boolean success = SQLQueries.insertDataIntoTblSession(s);
+	    if (success) {
+	        Hotel.getInstance().addSession(service, s);
+	        SQLQueries.insertDataIntoTblBookedRoomBooksService(new BookedRoomBooksService(Hotel.getClientID(), Hotel.getRoomNumber(), SQLQueries.readLastSessionByClient()));
+	        JOptionPane.showMessageDialog(this, "Session booked successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+	    } else {
+	        JOptionPane.showMessageDialog(this, "Failed to book session.", "Error", JOptionPane.ERROR_MESSAGE);
+	    }
 	}
+
 
 }

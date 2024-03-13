@@ -177,5 +177,4 @@ public class DonationsView extends JFrame implements ActionListener {
             }
         }
     }
-
 }

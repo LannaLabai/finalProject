@@ -52,7 +52,6 @@ public class TripsView extends BasicViewTemplate {
 		
 		lblTitle.setText("<html><h1>Trips</h1></html>");
 		lblSubtext.setText("This hotel offers several tours to Tel Aviv, Haifa, and the Northern region of Israel. "
-				+ "Please contact the lobby for information on pricing as it varies from season to season. "
 				+ "The closest dates are written below:");
 		
 		trips = Hotel.getInstance().getServiceByType(ServiceType.TRIPS);
@@ -62,13 +61,14 @@ public class TripsView extends BasicViewTemplate {
 			JPanel tripPanel = new JPanel();
 			tripPanel.setLayout(new BoxLayout(tripPanel,BoxLayout.Y_AXIS));
 			JCheckBox checkBox = new JCheckBox(s.getServiceName());
+			//JLabel lblCost = new JLabel(Hotel.getSe);
 			tripPanel.add(checkBox);
 			tripPanel.add(new JLabel(s.getServiceDesc()));
 			mainPanel.add(tripPanel);
 			
 		}
 		
-		btnOrder = new JButton("Order");
+		btnOrder = new JButton("Book");
 	    btnOrder.addActionListener(this);
 		mainPanel.add(btnOrder);
 	}

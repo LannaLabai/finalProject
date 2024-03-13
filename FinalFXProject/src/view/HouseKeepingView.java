@@ -17,6 +17,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -175,68 +176,84 @@ public class HouseKeepingView extends JFrame implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		if(e.getSource()==btnOrder) {
-			for(JCheckBox cb: checkboxes) {
-				if(cb.isSelected()) {
-					String content = null;
-					if(cb.getText().equals("Other")) {
-						content = txtAreaOtherRequest.getText();
-					}
-					
-					RequestType rt = null;
-					for(RequestType rti : RequestType.values()) {
-						if(rti.toString().equals(cb.getText())) {
-							rt = rti;
-						}
-					}
-					
-					Request r = new Request(Hotel.getRoomNumber(),Hotel.getClientID(),LocalDateTime.now(),rt,content);
-					
-					SQLQueries.insertDataIntoTblRequest(r);
-					
-				}
-			}
-			
-		}
-		if(e.getSource()==otherCheckBox) {
-			if (otherCheckBox.isSelected()) {
-				JPanel textAreaPanel = new JPanel(); // Create a panel for the JTextArea
-				txtAreaOtherRequest = new JTextArea(3, 10); // Rows, Columns
-				txtAreaOtherRequest.setLineWrap(true);
-				txtAreaOtherRequest.setWrapStyleWord(true);
+	    // Handle button clicks
+	    if (e.getSource() == btnOrder) {
+	        // Iterate over checkboxes
+	        for (JCheckBox cb : checkboxes) {
+	            if (cb.isSelected()) {
+	                String content = null;
+	                if (cb.getText().equals("Other")) {
+	                    content = txtAreaOtherRequest.getText();
+	                }
+
+	                RequestType rt = null;
+	                for (RequestType rti : RequestType.values()) {
+	                    if (rti.toString().equals(cb.getText())) {
+	                        rt = rti;
+	                    }
+	                }
+
+	                Request r = new Request(Hotel.getRoomNumber(), Hotel.getClientID(), LocalDateTime.now(), rt, content);
+
+	                boolean success = SQLQueries.insertDataIntoTblRequest(r);
+
+	                // Show a dialog based on the success of the insertion
+	                if (success) {
+	                    JOptionPane.showMessageDialog(this, "Request sent successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+	                } else {
+	                    JOptionPane.showMessageDialog(this, "Failed to send request.", "Error", JOptionPane.ERROR_MESSAGE);
+	                }
+	            }
+	        }
+	    }
+
+	    // Handle "Other" checkbox selection
+	    if (e.getSource() == otherCheckBox) {
+	        if (otherCheckBox.isSelected()) {
+	            JPanel textAreaPanel = new JPanel(); // Create a panel for the JTextArea
+	            txtAreaOtherRequest = new JTextArea(3, 10); // Rows, Columns
+	            txtAreaOtherRequest.setLineWrap(true);
+	            txtAreaOtherRequest.setWrapStyleWord(true);
 	            textAreaPanel.add(txtAreaOtherRequest); // Add JTextArea to the panel
 	            cleaningPanel.add(textAreaPanel, BorderLayout.SOUTH);
 	        } else {
-	        	cleaningPanel.remove(txtAreaOtherRequest);
+	            cleaningPanel.remove(txtAreaOtherRequest);
 	        }
 	        // Revalidate and repaint the panel
 	        cleaningPanel.revalidate();
 	        cleaningPanel.repaint();
-	    
-		}
-		for (JRadioButton radioButton : radioButtons) {
+	    }
+
+	    // Handle radio button selection
+	    for (JRadioButton radioButton : radioButtons) {
 	        if (radioButton.isSelected()) {
-	            
 	            RequestType rt = null;
-				for(RequestType rti : RequestType.values()) {
-					if(rti.toString().equals(radioButton.getText())) {
-						rt = rti;
-					}
-				}
-					
-				Request r = new Request(Hotel.getRoomNumber(),Hotel.getClientID(),LocalDateTime.now(),rt,null);
-					
-				SQLQueries.insertDataIntoTblRequest(r);
-	            
+	            for (RequestType rti : RequestType.values()) {
+	                if (rti.toString().equals(radioButton.getText())) {
+	                    rt = rti;
+	                }
+	            }
+
+	            Request r = new Request(Hotel.getRoomNumber(), Hotel.getClientID(), LocalDateTime.now(), rt, null);
+
+	            boolean success = SQLQueries.insertDataIntoTblRequest(r);
+
+	            // Show a dialog based on the success of the insertion
+	            if (success) {
+	                JOptionPane.showMessageDialog(this, "Request sent successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+	            } else {
+	                JOptionPane.showMessageDialog(this, "Failed to send request.", "Error", JOptionPane.ERROR_MESSAGE);
+	            }
 	        }
 	    }
-		if(e.getSource()==btnBack) {
-			nextFrame.setVisible(true);
-            this.setVisible(false);
-		}
-		
+
+	    // Handle back button click
+	    if (e.getSource() == btnBack) {
+	        nextFrame.setVisible(true);
+	        this.setVisible(false);
+	    }
 	}
+
 	
 	
 

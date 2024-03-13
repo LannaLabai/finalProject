@@ -116,31 +116,39 @@ public class RoomServiceView extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == btnOrder) {
-        	double totalPrice = calculateTotalPrice();
-        	LocalDateTime timeOfOrder = LocalDateTime.now();
-        	String clientID = Hotel.getClientID();
-        	int roomNumber = Hotel.getRoomNumber();
-        	FoodOrder order = new FoodOrder(clientID, roomNumber, totalPrice, timeOfOrder);
-        	SQLQueries.insertDataIntoTblFoodOrder(order);
-        	order.setFoodOrderID(SQLQueries.readLastFoodOrderByClient(clientID, roomNumber));
-        	System.out.println(order);
-        	
-        	for(FoodOrderItems f: foodOrderItems) {
-        		if(f.getQuantity()>0) {
-        			f.setFoodOrderID(order.getFoodOrderID());
-            		SQLQueries.insertDataIntoTblFoodOrderItems(f);
-            		order.addOrderContent(f);
-            		System.out.println(f);
-        		}
-        		
-        	}
+        if (e.getSource() == btnOrder) {
+            double totalPrice = calculateTotalPrice();
+            LocalDateTime timeOfOrder = LocalDateTime.now();
+            String clientID = Hotel.getClientID();
+            int roomNumber = Hotel.getRoomNumber();
+            FoodOrder order = new FoodOrder(clientID, roomNumber, totalPrice, timeOfOrder);
+            
+            boolean successOrder = SQLQueries.insertDataIntoTblFoodOrder(order);
+            if (successOrder) {
+                order.setFoodOrderID(SQLQueries.readLastFoodOrderByClient(clientID, roomNumber));
+                System.out.println(order);
+                
+                for (FoodOrderItems f : foodOrderItems) {
+                    if (f.getQuantity() > 0) {
+                        f.setFoodOrderID(order.getFoodOrderID());
+                        boolean successItem = SQLQueries.insertDataIntoTblFoodOrderItems(f);
+                        if (successItem) {
+                            order.addOrderContent(f);
+                            System.out.println(f);
+                        }
+                    }
+                }
+                JOptionPane.showMessageDialog(this, "Food order placed successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to place food order.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
-        if(e.getSource()==btnBack) {
-			nextFrame.setVisible(true);
+        if (e.getSource() == btnBack) {
+            nextFrame.setVisible(true);
             this.setVisible(false);
-		}
+        }
     }
+
 
  
     private double calculateTotalPrice() {
