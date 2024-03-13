@@ -43,7 +43,7 @@ public class RoomServiceView extends JFrame implements ActionListener {
 	public RoomServiceView() {
 		super("Room Service");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 450, 300);
+        setBounds(100, 100, 800, 600);
         setVisible(true);
         initialize();
     }
@@ -51,7 +51,7 @@ public class RoomServiceView extends JFrame implements ActionListener {
 	public RoomServiceView(JFrame nextFrame) {
 		super("Room Service");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 450, 300);
+        setBounds(100, 100,800, 600);
         setVisible(true);
         this.nextFrame = nextFrame;
         initialize();
@@ -80,6 +80,7 @@ public class RoomServiceView extends JFrame implements ActionListener {
         for (FoodItem f : Hotel.getInstance().getFoodItems()) {
             JPanel foodItemSelectionPanel = new JPanel(); // Panel for each food item selection
             JLabel lblFoodItem = new JLabel(f.getFoodItemName());
+            JLabel lblPrice = new JLabel(String.valueOf(f.getFoodItemCost()));
             JButton btnAddOne = new JButton("+");
             JLabel lblAmount = new JLabel("0");
             JButton btnSubtractOne = new JButton("-");
@@ -88,6 +89,7 @@ public class RoomServiceView extends JFrame implements ActionListener {
             foodOrderItems.add(item);
             
             foodItemSelectionPanel.add(lblFoodItem);
+            foodItemSelectionPanel.add(lblPrice);
             foodItemSelectionPanel.add(btnSubtractOne);
             foodItemSelectionPanel.add(lblAmount);
             foodItemSelectionPanel.add(btnAddOne);
