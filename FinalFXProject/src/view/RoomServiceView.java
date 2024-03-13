@@ -21,6 +21,9 @@ public class RoomServiceView extends JFrame implements ActionListener {
 	private JFrame nextFrame;
 	private JButton btnOrder;
 	private JButton btnBack;
+	private JLabel lblTotalPrice;
+	
+	private double totalPrice = 0;
 	
 	private ArrayList<FoodOrderItems> foodOrderItems;
 	
@@ -94,13 +97,17 @@ public class RoomServiceView extends JFrame implements ActionListener {
             foodItemSelectionPanel.add(lblAmount);
             foodItemSelectionPanel.add(btnAddOne);
 
-            btnAddOne.addActionListener(e -> updateAmount(lblAmount,f.getFoodItemID(), 1));
-            btnSubtractOne.addActionListener(e -> updateAmount(lblAmount,f.getFoodItemID(), -1));
+            btnAddOne.addActionListener(e -> updateAmount(lblAmount,f, 1));
+            btnSubtractOne.addActionListener(e -> updateAmount(lblAmount,f, -1));
 
             panel.add(foodItemSelectionPanel); // Add foodItemSelectionPanel to the main panel
         }
         
         btnOrder = new JButton("Order");
+        
+        lblTotalPrice = new JLabel("Total Price: "+String.valueOf(totalPrice));
+        
+        panel.add(lblTotalPrice);
         panel.add(btnOrder);
         
         btnOrder.addActionListener(this);
@@ -110,7 +117,6 @@ public class RoomServiceView extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == btnOrder) {
-        	//save food order 
         	double totalPrice = calculateTotalPrice();
         	LocalDateTime timeOfOrder = LocalDateTime.now();
         	String clientID = Hotel.getClientID();
@@ -146,16 +152,17 @@ public class RoomServiceView extends JFrame implements ActionListener {
         return totalPrice;
     }
 
-    // Method to update the quantity of a food item
-    private void updateAmount(JLabel lblAmount, int foodItemID, int delta) {
+    private void updateAmount(JLabel lblAmount, FoodItem f, int delta) {
         int currentAmount = Integer.parseInt(lblAmount.getText()) + delta;
         if (currentAmount >= 0) {
             lblAmount.setText(String.valueOf(currentAmount));
-            foodOrderItems.get(foodItemID-1).setQuantity(currentAmount); // Update the quantity in the foodItems map
+            foodOrderItems.get(f.getFoodItemID()-1).setQuantity(currentAmount); 
+            totalPrice = totalPrice+delta*f.getFoodItemCost();
+            lblTotalPrice.setText("Total Price: "+String.valueOf(totalPrice));
         }
         else {
         	lblAmount.setText("0");
-        	foodOrderItems.get(foodItemID-1).setQuantity(0); // Update the quantity in the foodItems map
+        	foodOrderItems.get(f.getFoodItemID()-1).setQuantity(0); 
         }
     }
 	
