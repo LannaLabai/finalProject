@@ -148,28 +148,34 @@ public class DonationsView extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == btnBack) {
-        	nextFrame.setVisible(true);
+        if (e.getSource() == btnBack) {
+            nextFrame.setVisible(true);
             this.setVisible(false);
         }
-        if(e.getSource() == btnDonate) {
-        	DonationProject selectedProject = null;
+        if (e.getSource() == btnDonate) {
+            DonationProject selectedProject = null;
             for (JRadioButton radioButton : donationProjectsRadio) {
                 if (radioButton.isSelected()) {
                     for (DonationProject dp : Hotel.getInstance().getDonationProjects()) {
                         if (dp.getDonationProjectName().equals(radioButton.getText())) {
                             selectedProject = dp;
+                            break; // Exit loop once found
                         }
                     }
                 }
             }
-            if(selectedProject!=null) {
-            	Donation d= new Donation(selectedProject.getDonationProjectID(), Hotel.getClientID(), Hotel.getRoomNumber(),
-            			Double.parseDouble(txtSum.getText()), LocalDateTime.now());
-            	
-            	SQLQueries.insertDataIntoTblDonation(d);
+            if (selectedProject != null) {
+                Donation d = new Donation(selectedProject.getDonationProjectID(), Hotel.getClientID(), Hotel.getRoomNumber(),
+                        Double.parseDouble(txtSum.getText()), LocalDateTime.now());
+
+                boolean success = SQLQueries.insertDataIntoTblDonation(d);
+                if (success) {
+                    JOptionPane.showMessageDialog(this, "Donation made successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to make donation.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
-        	
         }
     }
+
 }
