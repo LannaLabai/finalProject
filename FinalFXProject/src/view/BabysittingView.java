@@ -81,6 +81,7 @@ public class BabysittingView extends JFrame implements ActionListener {
                 "18:00", "19:00", "20:00", "21:00", "22:00"};
 
         JLabel lblStart = new JLabel("Drop-off hour: ");
+        lblStart.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
         comboBoxStart = new JComboBox<>(hours);
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -89,6 +90,7 @@ public class BabysittingView extends JFrame implements ActionListener {
         formPanel.add(comboBoxStart, gbc);
 
         JLabel lblEnd = new JLabel("Pick-up hour: ");
+        lblEnd.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
         comboBoxEnd = new JComboBox<>(hours);
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -97,6 +99,7 @@ public class BabysittingView extends JFrame implements ActionListener {
         formPanel.add(comboBoxEnd, gbc);
 
         JLabel lblNumChildren = new JLabel("Number of children: ");
+        lblNumChildren.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
         txtNumChildren = new JTextField(10);
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -105,6 +108,7 @@ public class BabysittingView extends JFrame implements ActionListener {
         formPanel.add(txtNumChildren, gbc);
 
         btnOrder = new JButton("Order");
+        btnOrder.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
         btnOrder.addActionListener(this);
         gbc.gridx = 0;
         gbc.gridy = 3;

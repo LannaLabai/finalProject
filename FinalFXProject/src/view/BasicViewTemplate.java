@@ -1,5 +1,8 @@
-package view;
 
+package view;
+import javax.swing.ImageIcon;
+import view.BackgroundPanel;
+import java.awt.Image;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -14,10 +17,10 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
-
 import model.Hotel;
 
 public class BasicViewTemplate extends JFrame implements ActionListener {
@@ -52,11 +55,23 @@ public class BasicViewTemplate extends JFrame implements ActionListener {
 	}
 	
 	public void initializeDefault() {
-		contentPane = new JPanel();
+		// Create layered pane
+        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setPreferredSize(new Dimension(800, 600)); // Adjusted size for more vertical space
+
+        // Create background label
+        ImageIcon backgroundImage = new ImageIcon("ImagesOfProject/backgroundImage.jpg");
+        JLabel backgroundLabel = new JLabel(backgroundImage);
+        backgroundLabel.setBounds(0, 0, backgroundImage.getIconWidth(), backgroundImage.getIconHeight());
+
+        contentPane = new JPanel();
+        contentPane.setOpaque(false); 
 	    contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 	    contentPane.setLayout(new BorderLayout(0, 0));
+	    
 
 	    scrollPane = new JScrollPane();
+	    scrollPane.setOpaque(false);
 	    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 	    contentPane.add(scrollPane, BorderLayout.CENTER);
 
@@ -78,13 +93,29 @@ public class BasicViewTemplate extends JFrame implements ActionListener {
 	    mainPanel.add(lblSubtext);
 	    
 	    mainPanel.setMaximumSize(new Dimension(800,600));
+	 
 	}
 	
 	public void initialize(){
 		
 	}
 	
+	public void setBackgroundImage(String imagePath) {
+	    BackgroundPanel backgroundPanel = new BackgroundPanel(imagePath);
 
+	    scrollPane = new JScrollPane();
+	    scrollPane.setOpaque(false);
+	    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	    backgroundPanel.add(scrollPane, BorderLayout.CENTER);
+
+	    mainPanel = new JPanel();
+	    mainPanel.setOpaque(false);
+	    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+	    scrollPane.setViewportView(mainPanel);
+
+	    setContentPane(backgroundPanel);
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==btnBack) {

@@ -53,6 +53,7 @@ public class SafetyAndRegulationsView extends BasicViewTemplate {
 			e.printStackTrace();
 		}
 		JTextArea txtSafety = new JTextArea(safetyText);
+		txtSafety.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
 		txtSafety.setEditable(false);
 		txtSafety.setLineWrap(true);  // Enable line wrapping
 		txtSafety.setWrapStyleWord(true);

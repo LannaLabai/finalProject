@@ -20,6 +20,7 @@ public class BackgroundPanel extends JPanel {
 
     public BackgroundPanel(String imagePath) {
         this.backgroundImage = new ImageIcon(imagePath).getImage();
+        setLayout(new BorderLayout());
     }
 
     @Override
@@ -27,6 +28,8 @@ public class BackgroundPanel extends JPanel {
         super.paintComponent(g);
         g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
     }
+    
+  
 }
 
 

@@ -58,72 +58,101 @@ public class SpaView extends BasicViewTemplate {
 	
 	@Override
 	public void initialize() {
-		initializeDefault();
-		
-		JPanel orderSpaPanel = new JPanel();
-		orderSpaPanel.setLayout(new BoxLayout(orderSpaPanel, BoxLayout.Y_AXIS));
-		mainPanel.add(orderSpaPanel);
-		
-		lblTitle.setText("<html><h1>Spa</h1></html>");
-		String desc = "";
-		
-		String[] spaServices = new String[Hotel.getInstance().getServiceByType(ServiceType.SPA).size()-3];
-		
-		int i = 0;
-		for(Service s: Hotel.getInstance().getServiceByType(ServiceType.SPA)) {
-			if(s.getServiceName().equals("Spa")) {
-				desc = s.getServiceDesc();
-			}
-			if(!s.getServiceName().equals("Spa") && !s.getServiceName().equals("Jacuzzi") && !s.getServiceName().equals("Sauna")){
-				spaServices[i++] = s.getServiceName();
-			}
-			
-		}
-		lblSubtext.setText(desc);
+	    initializeDefault();
+	    
+	    // Set mainPanel layout to BorderLayout
+	    mainPanel.setLayout(new BorderLayout());
+	    
+	    JPanel orderSpaPanel = new JPanel(new GridBagLayout());
+	    JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER)); // Set layout to FlowLayout with center alignment
+	    
+	    lblTitle.setText("<html><h1>Spa<br></h1></html>");
+	    String desc = "";
+	    
+	    String[] spaServices = new String[Hotel.getInstance().getServiceByType(ServiceType.SPA).size()-3];
+	    
+	    int i = 0;
+	    for(Service s: Hotel.getInstance().getServiceByType(ServiceType.SPA)) {
+	        if(s.getServiceName().equals("Spa")) {
+	            desc = s.getServiceDesc();
+	        }
+	        if(!s.getServiceName().equals("Spa") && !s.getServiceName().equals("Jacuzzi") && !s.getServiceName().equals("Sauna")){
+	            spaServices[i++] = s.getServiceName();
+	        }
+	    }
+	    lblSubtext.setText(desc);
+	    
+	 // Add components to titlePanel
+	    titlePanel.add(lblTitle);
+	    titlePanel.add(new JSeparator(SwingConstants.HORIZONTAL));
+	    titlePanel.add(lblSubtext);
+	   
 
-		JLabel lblOrder = new JLabel("You can order a spa session by filling out the form below:");
-		orderSpaPanel.add(lblOrder);
-		
-		JLabel lblChooseService = new JLabel("Desired spa service: ");
-		comboBoxSpa = new JComboBox<>(spaServices);
-		comboBoxSpa.addActionListener(this);
-		
-		spaPrice = new JLabel("");
-		
-		JLabel lblSpaDate = new JLabel("Spa date: ");
-        LocalDate today = LocalDate.now();
-        LocalDate[] availableDates = new LocalDate[7];
-        String[] dateStrings = new String[7];
-        for (i = 0; i < 7; i++) {
-        	availableDates[i] = today.plusDays(i);
-            dateStrings[i] = availableDates[i].toString();
-        }
-        
-        comboBoxDates = new JComboBox<>(dateStrings);
-        
-        String[] hours = {"8:00", "9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00",
-                "19:00", "20:00", "21:00", "22:00"};
+	    JLabel lblOrder = new JLabel("You can order a spa session by filling out the form below:");
+	    
+	    JLabel lblChooseService = new JLabel("Desired spa service: ");
+	    comboBoxSpa = new JComboBox<>(spaServices);
+	    comboBoxSpa.addActionListener(this);
+	    
+	    spaPrice = new JLabel("");
+	    
+	    JLabel lblSpaDate = new JLabel("Spa date: ");
+	    LocalDate today = LocalDate.now();
+	    LocalDate[] availableDates = new LocalDate[7];
+	    String[] dateStrings = new String[7];
+	    for (i = 0; i < 7; i++) {
+	        availableDates[i] = today.plusDays(i);
+	        dateStrings[i] = availableDates[i].toString();
+	    }
+	    
+	    comboBoxDates = new JComboBox<>(dateStrings);
+	    
+	    String[] hours = {"8:00", "9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00",
+	            "19:00", "20:00", "21:00", "22:00"};
 	    JLabel lblSpaTime = new JLabel("Spa time: ");
 	    comboBoxTime = new JComboBox<>(hours);
-		
-		JLabel lblNumParticipants = new JLabel("Number of Participants (maximum of 2): ");
-		txtNumParticipants = new JTextField();
-		
-		btnOrder = new JButton("Order");
-		btnOrder.addActionListener(this);
-
-		orderSpaPanel.add(lblChooseService);
-		orderSpaPanel.add(comboBoxSpa);
-		orderSpaPanel.add(spaPrice);
-		orderSpaPanel.add(lblSpaDate);
-		orderSpaPanel.add(comboBoxDates);
-		orderSpaPanel.add(lblSpaTime);
-		orderSpaPanel.add(comboBoxTime);
-		orderSpaPanel.add(lblNumParticipants);
-		orderSpaPanel.add(txtNumParticipants);
-		orderSpaPanel.add(btnOrder);
-		
-		
+	    
+	    JLabel lblNumParticipants = new JLabel("Number of Participants (maximum of 2): ");
+	    txtNumParticipants = new JTextField();
+	    txtNumParticipants.setPreferredSize(new Dimension(150, txtNumParticipants.getPreferredSize().height)); // Set preferred width
+	 
+	    btnOrder = new JButton("Order");
+	    btnOrder.addActionListener(this);
+	    
+	    GridBagConstraints gbc = new GridBagConstraints();
+	    gbc.gridx = 0;
+	    gbc.gridy = 0;
+	    gbc.anchor = GridBagConstraints.WEST;
+	    gbc.insets = new Insets(5, 5, 5, 5); // Add some padding
+	    
+	    // Add components to orderSpaPanel with appropriate constraints
+	    orderSpaPanel.add(lblOrder, gbc);
+	    gbc.gridy++;
+	    orderSpaPanel.add(lblChooseService, gbc);
+	    gbc.gridy++;
+	    orderSpaPanel.add(comboBoxSpa, gbc);
+	    gbc.gridy++;
+	    orderSpaPanel.add(spaPrice, gbc);
+	    gbc.gridy++;
+	    orderSpaPanel.add(lblSpaDate, gbc);
+	    gbc.gridy++;
+	    orderSpaPanel.add(comboBoxDates, gbc);
+	    gbc.gridy++;
+	    orderSpaPanel.add(lblSpaTime, gbc);
+	    gbc.gridy++;
+	    orderSpaPanel.add(comboBoxTime, gbc);
+	    gbc.gridy++;
+	    orderSpaPanel.add(lblNumParticipants, gbc);
+	    gbc.gridy++;
+	    orderSpaPanel.add(txtNumParticipants, gbc);
+	    gbc.gridy++;
+	    gbc.gridwidth = 2; // span two columns for the button
+	    orderSpaPanel.add(btnOrder, gbc);
+	    
+	 // Add titlePanel to mainPanel with BorderLayout.NORTH
+	    mainPanel.add(titlePanel, BorderLayout.NORTH);
+	    // Add orderSpaPanel to mainPanel with BorderLayout.CENTER
+	    mainPanel.add(orderSpaPanel, BorderLayout.CENTER);
 	}
 	
 	@Override
