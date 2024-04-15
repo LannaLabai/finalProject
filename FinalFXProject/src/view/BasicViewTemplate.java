@@ -86,7 +86,7 @@ public class BasicViewTemplate extends JFrame implements ActionListener {
 	    btnBack = new JButton("Back");
 	    btnBack.addActionListener(this);
 	    JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Panel for back button
-	   // btnPanel.setOpaque(false); // Make it transparent
+	    btnPanel.setOpaque(false); // Make it transparent
 	    btnPanel.add(btnBack); // Add back button to panel
 	    contentPane.add(btnPanel, BorderLayout.NORTH);
 	    

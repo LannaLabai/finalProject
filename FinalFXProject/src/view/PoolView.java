@@ -55,18 +55,19 @@ public class PoolView extends BasicViewTemplate {
 	    overlayPanel.setOpaque(false); // Make the panel transparent
 	    overlayPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 10)); // Stack components vertically with center alignment and 10px vertical gap
 	    overlayPanel.setBounds(0, 0, backgroundImage.getIconWidth(), backgroundImage.getIconHeight());
-
+	    
 	    // Add title
 	    JLabel labelTitle = new JLabel("<html><h1>Pool <br></h1></html>");
 	    labelTitle.setAlignmentX(Component.CENTER_ALIGNMENT); // Center the label horizontally
 	    overlayPanel.add(labelTitle);
 
 	    // Add some vertical space between title and subtext
-	    overlayPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+	    overlayPanel.add(Box.createRigidArea(new Dimension(30, 70)));
 
 	    // Add subtext
 	    JLabel lblSubtextSubtext = new JLabel("<html><p width=\"400\">" + Hotel.getInstance().getServiceByType(ServiceType.POOL).get(0).getServiceDesc() + "</p></html>");
 	    lblSubtextSubtext.setAlignmentX(Component.CENTER_ALIGNMENT); // Center the label horizontally
+	    lblSubtextSubtext.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
 	    overlayPanel.add(lblSubtextSubtext); // Add the subtext directly to the overlay panel
 	    
 	    // Create a layered pane to hold the background image and overlay panel

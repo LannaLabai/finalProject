@@ -46,7 +46,7 @@ public class WifiInfoView extends BasicViewTemplate {
         contentPanel.add(lblTitle);
 
         // Add some vertical space between title and subtext
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 70)));
 
         // Add subtext
         JLabel lblSubtext = new JLabel(""); // No subtext for this view
