@@ -6,11 +6,13 @@ import java.awt.Image;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -63,7 +65,7 @@ public class BasicViewTemplate extends JFrame implements ActionListener {
         ImageIcon backgroundImage = new ImageIcon("ImagesOfProject/backgroundImage.jpg");
         JLabel backgroundLabel = new JLabel(backgroundImage);
         backgroundLabel.setBounds(0, 0, backgroundImage.getIconWidth(), backgroundImage.getIconHeight());
-
+   
         contentPane = new JPanel();
         contentPane.setOpaque(false); 
 	    contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -77,14 +79,17 @@ public class BasicViewTemplate extends JFrame implements ActionListener {
 
 	    mainPanel = new JPanel();
 	    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS)); // Stack components vertically
-	    //mainPanel.setLayout(new BorderLayout());
 	    scrollPane.setViewportView(mainPanel);
 	    setContentPane(contentPane);
 	    
-		btnBack = new JButton("Back");
-		btnBack.addActionListener(this);
-		mainPanel.add(btnBack);
-
+	    // Add back button to the top-left corner
+	    btnBack = new JButton("Back");
+	    btnBack.addActionListener(this);
+	    JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Panel for back button
+	   // btnPanel.setOpaque(false); // Make it transparent
+	    btnPanel.add(btnBack); // Add back button to panel
+	    contentPane.add(btnPanel, BorderLayout.NORTH);
+	    
 	    // Add title
 	    lblTitle = new JLabel();
 	    mainPanel.add(lblTitle);

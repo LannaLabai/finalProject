@@ -65,7 +65,7 @@ public class SpaView extends BasicViewTemplate {
 	    
 	    JPanel orderSpaPanel = new JPanel(new GridBagLayout());
 	    JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER)); // Set layout to FlowLayout with center alignment
-	    
+	    titlePanel.setOpaque(false);
 	    lblTitle.setText("<html><h1>Spa<br></h1></html>");
 	    String desc = "";
 	    

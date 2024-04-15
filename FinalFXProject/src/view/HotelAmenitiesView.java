@@ -40,7 +40,7 @@ public class HotelAmenitiesView extends BasicViewTemplate {
         mainPanel.add(btnPanel, BorderLayout.CENTER);
        
         for (ServiceType st : ServiceType.values()) {
-            if (st != ServiceType.ENTERTAINMENT) {
+            if (st != ServiceType.ENTERTAINMENT && st != ServiceType.TRIPS ) {
                 JButton btn = createServiceButton(st.toString());
                 btnPanel.add(btn);
             }
@@ -92,10 +92,6 @@ public class HotelAmenitiesView extends BasicViewTemplate {
                 break;
             case GYMACTIVITIES:
                 new GymActivitiesView(this).setVisible(true);
-                this.setVisible(false);
-                break;
-            case TRIPS:
-                new TripsView(this).setVisible(true);
                 this.setVisible(false);
                 break;
             case MANIPEDI:

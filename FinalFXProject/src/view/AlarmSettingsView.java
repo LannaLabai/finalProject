@@ -60,7 +60,7 @@ public class AlarmSettingsView extends BasicViewTemplate {
         JLabel backgroundLabel = new JLabel(backgroundImage);
         backgroundLabel.setBounds(0, 0, backgroundImage.getIconWidth(), backgroundImage.getIconHeight());
         
-        contentPane.add(btnBack, BorderLayout.NORTH);
+        //contentPane.add(btnBack, BorderLayout.WEST);
 
         // Create the "Add Alarm" button
         btnAddAlarm = new JButton("Add Alarm");
